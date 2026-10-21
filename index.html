@@ -111,6 +111,10 @@
   .callout.warn{border-left-color:var(--amber);background:var(--amber-soft)}
   .callout.danger{border-left-color:var(--red);background:var(--red-soft)}
   .qa p{background:var(--bg2);border:1px solid var(--line);border-radius:10px;padding:12px 14px;font-size:14.8px}
+  ul.selfcheck{list-style:none;padding-left:0;margin:10px 0}
+  ul.selfcheck li{margin:9px 0;padding:10px 13px;background:var(--bg2);border:1px solid var(--line);border-radius:10px;font-size:14.6px}
+  ul.selfcheck input{accent-color:var(--accent);margin-right:9px;width:16px;height:16px;vertical-align:-2px}
+  .think{border-left:4px solid var(--amber);background:var(--amber-soft);border-radius:10px;padding:12px 15px;margin:14px 0;font-size:14.8px}
   .ex{border:1px dashed var(--accent);border-radius:12px;padding:16px;margin:18px 0;background:color-mix(in srgb,var(--accent-soft) 45%,transparent)}
 
   /* ---------- code ---------- */
@@ -188,7 +192,7 @@
   <div class="spacer"></div>
   <div class="progress-wrap">
     <div class="progress-track"><div class="progress-fill" id="pfill"></div></div>
-    <div class="progress-text" id="ptext">0 / 9</div>
+    <div class="progress-text" id="ptext">0 / 10</div>
   </div>
   <button class="icon-btn" id="themeBtn" title="切换深色/浅色">🌙</button>
 </header>
@@ -201,12 +205,13 @@
       <a href="#overview"><span class="n">0</span>课程总览</a>
       <a href="#vite"><span class="n">1</span>Vite 环境搭建</a>
       <a href="#usestate"><span class="n">2</span>useState</a>
-      <a href="#useeffect"><span class="n">3</span>useEffect</a>
-      <a href="#usecontext"><span class="n">4</span>useContext</a>
-      <a href="#usememo"><span class="n">5</span>useMemo</a>
-      <a href="#useref"><span class="n">6</span>useRef</a>
-      <a href="#quiz"><span class="n">7</span>自测题</a>
-      <a href="#cheatsheet"><span class="n">8</span>速查表</a>
+      <a href="#statelab"><span class="n">3</span>useState 实验课</a>
+      <a href="#useeffect"><span class="n">4</span>useEffect</a>
+      <a href="#usecontext"><span class="n">5</span>useContext</a>
+      <a href="#usememo"><span class="n">6</span>useMemo</a>
+      <a href="#useref"><span class="n">7</span>useRef</a>
+      <a href="#quiz"><span class="n">8</span>自测题</a>
+      <a href="#cheatsheet"><span class="n">9</span>速查表</a>
     </nav>
   </aside>
 
@@ -231,6 +236,7 @@
   <ol class="timeline">
     <li><b>搭环境</b>：用 <code>npm create vite@latest</code> 起一个 React 项目</li>
     <li><b>useState</b>：先吃透「状态变化 → 重新渲染」这条主线</li>
+    <li><b>useState 实验课</b>：跟着 Step 00–08 亲手敲一遍，最后做状态提升</li>
     <li><b>useEffect</b>：理解依赖数组与清理函数（本模块最难也最重要）</li>
     <li><b>useContext</b>：组件树共享数据，配合自定义 Hook 使用</li>
     <li><b>useMemo</b>：需要时才优化，先写对再优化</li>
@@ -446,8 +452,627 @@ export default NameForm;
   <div class="done-row"><label class="done-label"><input type="checkbox" class="done-check" data-key="usestate"><span>标记「useState」已完成</span></label></div>
 </section>
 
+<section class="card" id="statelab">
+  <h2><span class="sec-num">3</span>useState 实验课：Step by Step</h2>
+  <p class="lead">这一节来自 <code>useState-Lab.pdf</code>（约 75 分钟的动手实验），配套代码就在 <code>usestate/</code> 文件夹里。
+  路线：一个按钮的计数器 → <b>故意用普通变量把它写坏</b>，看看为什么必须用 state → 加三个按钮与步长 →
+  最后把状态<b>提升</b>到三层组件树的顶部。教材强调：代码要自己敲，光读不算数。</p>
+
+  <h3>usestate 文件夹里有什么</h3>
+  <div class="table-wrap">
+    <table>
+      <thead><tr><th>文件</th><th>作用</th></tr></thead>
+      <tbody>
+        <tr><td><code>index.html</code></td><td>计数器页面，加载 <code>app.js</code>（CDN 方式引入 React）</td></tr>
+        <tr><td><code>app.js</code></td><td>有 Increment / Decrement / Reset 三个按钮的计数器</td></tr>
+        <tr><td><code>app-cdn.js</code></td><td>只有一个按钮的迷你计数器</td></tr>
+        <tr><td><code>styles.css</code></td><td>两个计数器页面的样式</td></tr>
+        <tr><td><code>lifting-state.html</code></td><td>第二个页面，加载 <code>lifting-state.js</code></td></tr>
+        <tr><td><code>lifting-state.js</code></td><td>同一个计数器拆成三层组件（状态提升）</td></tr>
+        <tr><td><code>lifting-state.css</code></td><td>第二个页面的额外样式（组件色块、props 徽章）</td></tr>
+        <tr><td><code>.vscode/settings.json</code></td><td>把 Live Server 端口设为 <code>5501</code></td></tr>
+      </tbody>
+    </table>
+  </div>
+
+  <h3>实验步骤一览</h3>
+  <div class="table-wrap">
+    <table>
+      <thead><tr><th>Step</th><th>主题</th><th>文件</th><th>分钟</th></tr></thead>
+      <tbody>
+        <tr><td>00</td><td>搭好环境，弄懂页面怎么加载 React</td><td><code>index.html</code></td><td>8</td></tr>
+        <tr><td>01</td><td>第一个 state 变量</td><td><code>app-cdn.js</code></td><td>9</td></tr>
+        <tr><td>02</td><td>为什么普通变量不够用</td><td><code>app-cdn.js</code></td><td>8</td></tr>
+        <tr><td>03</td><td>三个按钮与 updater 函数</td><td><code>app.js</code></td><td>8</td></tr>
+        <tr><td>04</td><td>传值，还是传 updater？</td><td><code>app.js</code></td><td>10</td></tr>
+        <tr><td>05</td><td>第二个 state：步长 step size</td><td><code>app.js</code></td><td>10</td></tr>
+        <tr><td>06</td><td>Lifting state up（状态提升）</td><td><code>lifting-state.js</code></td><td>9</td></tr>
+        <tr><td>07</td><td>再往树下传一个 callback</td><td><code>lifting-state.js</code></td><td>8</td></tr>
+        <tr><td>08</td><td>总结、挑战与自检</td><td>—</td><td>5</td></tr>
+        <tr><td colspan="3"><b>合计</b></td><td><b>75</b></td></tr>
+      </tbody>
+    </table>
+  </div>
+
+  <h3>Step 00 · 页面是怎么加载 React 的</h3>
+  <p>目标：项目在 Chrome 里跑起来，并知道每个 <code>&lt;script&gt;</code> 标签在干什么。</p>
+  <script type="text/plain" data-code data-lang="html" data-cap="usestate/index.html">
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <title>React CDN App</title>
+    <link rel="stylesheet" href="./styles.css" />
+  </head>
+  <body>
+    <div id="root"></div>
+
+    <script src="https://unpkg.com/react@18/umd/react.development.js" crossorigin />
+    <script src="https://unpkg.com/react-dom@18/umd/react-dom.development.js" crossorigin />
+    <script src="https://unpkg.com/@babel/standalone/babel.min.js" />
+    <script type="text/babel" src="./app.js" />
+  </body>
+</html>
+  </script>
+  <ul class="checks">
+    <li>前两个标签从 CDN 加载 React 与 ReactDOM，挂成全局变量 <code>React</code>、<code>ReactDOM</code></li>
+    <li>第三个加载 Babel，负责在浏览器里把 JSX 翻译成普通 JS</li>
+    <li>第四个是你的代码；<code>type="text/babel"</code> 让浏览器先别执行，等 Babel 翻译完再跑</li>
+    <li>文件第一行 <code>const { useState } = React;</code>，在 Vite 项目里写作 <code>import { useState } from "react";</code>——其余完全一样</li>
+  </ul>
+  <div class="callout warn">
+    <div class="callout-h">⚠️ 为什么必须用 Live Server，不能双击打开</div>
+    <div class="callout-b">Babel 要用网络请求去取 <code>app.js</code>；用 <code>file://…</code> 直接打开的页面不允许这么做，结果就是<b>一片空白</b>。
+    请在 VS Code 里右键 <code>index.html</code> → Open with Live Server（端口 5501），并保持 Console 常开。</div>
+  </div>
+
+  <h3>Step 01 · 第一个 state 变量</h3>
+  <p>把 <code>index.html</code> 最后一个 script 换成 <code>./app-cdn.js</code>，打开只有一个按钮的迷你计数器：</p>
+  <script type="text/plain" data-code data-lang="jsx" data-cap="app-cdn.js 的关键一行 + 按钮">
+const { useState } = React;
+
+function Counter() {
+    // Declare a state variable named 'count', initialized to 0
+    const [count, setCount] = useState(0);
+    return (
+        <div>
+            <p>You clicked {count} times</p>
+            <button onClick={() => setCount(count + 1)}>
+                Click me
+            </button>
+        </div>
+    );
+}
+function App(props) {
+    return (
+        <div className='App'>
+            <Counter />
+        </div>
+    );
+}
+const root = ReactDOM.createRoot(document.getElementById("root"));
+root.render(<App />);
+  </script>
+  <ul class="checks">
+    <li><code>useState(0)</code>：向 React 要一份从 0 开始的 state</li>
+    <li>React 返回<b>两项数组</b>：当前值 + 修改它的 setter</li>
+    <li>左边的方括号是<b>数组解构</b>，名字随你起，约定是 <code>thing</code> / <code>setThing</code></li>
+    <li>点击并不是直接改 <code>count</code>，而是调用 <code>setCount</code> 告诉 React：存新值，然后<b>重新调用</b> <code>Counter()</code></li>
+  </ul>
+  <div class="callout key">
+    <div class="callout-h">🔑 渲染循环一句话</div>
+    <div class="callout-b">你调用 setter → React 存下新值 → React 再次调用你的组件 → 返回的 JSX 用上新值 → React 只更新页面上真正变了的那一小块。
+    第二次渲染时 <code>useState(0)</code> 里的 0 会被忽略，返回的是存起来的值。</div>
+  </div>
+
+  <h3>Step 02 · 为什么普通变量不够用</h3>
+  <p>把 <code>Counter</code> 换成这个「无 hook」版本，点三下看控制台：</p>
+  <script type="text/plain" data-code data-lang="jsx" data-cap="反例：普通变量不会驱动界面">
+function Counter() {
+    console.log("Counter rendered");
+    let count = 0;
+    return (
+        <div>
+            <p>You clicked {count} times</p>
+            <button onClick={() => { count = count + 1; console.log("count is now", count); }}>
+                Click me
+            </button>
+        </div>
+    );
+}
+  </script>
+  <ul class="checks">
+    <li>控制台里变量确实变成 1、2、3，但页面依旧写着 <code>You clicked 0 times</code></li>
+    <li><code>Counter rendered</code> 只出现一次 —— 改普通变量<b>没有通知 React</b>，React 就不会再调用组件</li>
+    <li>就算它重新调用，<code>let count = 0</code> 也会从头再来</li>
+  </ul>
+  <script type="text/plain" data-code data-lang="jsx" data-cap="改回 useState，并加一行日志观察每次渲染">
+const [count, setCount] = useState(0);
+console.log("Counter rendered, count =", count);
+  </script>
+  <p>现在每点一次，控制台就多一行 <code>Counter rendered, count = 新值</code>。</p>
+  <div class="callout key">
+    <div class="callout-h">🔑 state 就是「React 替你记住的东西」</div>
+    <div class="callout-b">值存在你的函数之外、两次调用之间。setter 是<b>唯一</b>能改它的方式，因为调用 setter 才是「通知 React 重新渲染」的动作。</div>
+  </div>
+
+  <h3>Step 03 · 三个按钮与 updater 函数</h3>
+  <p>把 script 换回 <code>app.js</code>，读这三个 handler：</p>
+  <script type="text/plain" data-code data-lang="jsx" data-cap="usestate/app.js（含三个按钮）">
+const { useState } = React;
+
+function App() {
+  const [count, setCount] = useState(0);
+
+  return (
+    <main className="card">
+      <h1>React App via CDN</h1>
+      <p>No build step needed. This runs directly in the browser.</p>
+      <div className="count">{count}</div>
+      <div className="actions">
+        <button onClick={() => setCount((c) => c + 1)}>Increment</button>
+        <button onClick={() => setCount((c) => c - 1)}>Decrement</button>
+        <button onClick={() => setCount(0)}>Reset</button>
+      </div>
+    </main>
+  );
+}
+
+const root = ReactDOM.createRoot(document.getElementById("root"));
+root.render(<App />);
+  </script>
+  <ul class="checks">
+    <li><code>Reset</code> <b>传值</b>：「把它设成 0」，新值与旧值无关</li>
+    <li><code>Increment / Decrement</code> <b>传 updater 函数</b>：「拿当前值加 1」；React 会把最新值作为 <code>c</code> 传进去（写 <code>prev</code> 也很常见）</li>
+  </ul>
+  <div class="callout danger">
+    <div class="callout-h">🚨 别写成 onClick={setCount(0)}</div>
+    <div class="callout-b">那样 setter 会在<b>渲染过程中</b>执行 → 触发新的渲染 → 又执行 → React 抛 <code>Too many re-renders</code>，页面变白。
+    必须用箭头函数包一层：<code>onClick={() =&gt; setCount(0)}</code>。</div>
+  </div>
+
+  <h3>Step 04 · 传值，还是传 updater？</h3>
+  <p>实验：加一个 +3 按钮，连续三次<b>传值</b>：</p>
+  <script type="text/plain" data-code data-lang="jsx" data-cap="❌ 结果只加 1">
+<button
+  onClick={() => {
+    setCount(count + 1);
+    setCount(count + 1);
+    setCount(count + 1);
+  }}
+>
+  +3
+</button>
+  </script>
+  <p>改成 <b>updater</b> 形式，结果才是 +3：</p>
+  <script type="text/plain" data-code data-lang="jsx" data-cap="✅ 结果加 3">
+setCount((c) => c + 1);
+setCount((c) => c + 1);
+setCount((c) => c + 1);
+  </script>
+  <div class="callout tip">
+    <div class="callout-h">💡 快照 + 批处理</div>
+    <div class="callout-b">
+      <ul class="checks" style="margin:4px 0 0">
+        <li>一次渲染里 <code>count</code> 是个<b>固定的快照</b>：如果点击时它是 0，三行都等于「把它设成 1」</li>
+        <li>updater 会被<b>排队</b>执行，每一个拿到前一个的结果，所以是 3</li>
+        <li>点一次 +3，控制台<b>只多一行</b> <code>App rendered</code>：React 把一次事件里的多次更新<b>批处理</b>成一次渲染</li>
+        <li><b>经验法则</b>：新值由旧值算出来 → 用 updater；固定值 → 直接传值</li>
+      </ul>
+    </div>
+  </div>
+
+  <h3>Step 05 · 第二个 state：步长</h3>
+  <p>一个组件可以调用 <code>useState</code> 任意多次，每次都是一份<b>独立</b>的 state：</p>
+  <script type="text/plain" data-code data-lang="jsx">
+const [count, setCount] = useState(0);
+const [step, setStep] = useState(1);
+console.log("App rendered, count =", count, "step =", step);
+  </script>
+  <script type="text/plain" data-code data-lang="jsx" data-cap="受控输入：value 来自 state，每次输入都 onChange 回写">
+<div className="count">{count}</div>
+<label className="step">
+  Step size
+  <input
+    type="number"
+    min="1"
+    value={step}
+    onChange={(e) => setStep(Number(e.target.value))}
+  />
+</label>
+  </script>
+  <script type="text/plain" data-code data-lang="jsx" data-cap="把步长用进两个 handler（并删掉之前的 +3 按钮）">
+<button onClick={() => setCount((c) => c + step)}>Increment</button>
+<button onClick={() => setCount((c) => c - step)}>Decrement</button>
+<button onClick={() => setCount(0)}>Reset</button>
+  </script>
+  <script type="text/plain" data-code data-lang="css" data-cap="追加到 styles.css 末尾">
+.step {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin-bottom: 16px;
+}
+
+.step input {
+  width: 64px;
+  padding: 6px 8px;
+  font: inherit;
+}
+  </script>
+  <div class="callout tip">
+    <div class="callout-h">💡 输入框永远给你字符串</div>
+    <div class="callout-b">即使是 <code>type="number"</code>，<code>e.target.value</code> 也是字符串，所以要 <code>Number(...)</code>；
+    否则 <code>0 + "5"</code> 会得到字符串 <code>"05"</code>。改一个 state 不会影响其它 state。</div>
+  </div>
+  <div class="think">
+    <b>TRY IT（1 分钟）：</b>点 Reset 后 count 归 0，但 step 仍是 5。你觉得 Reset 也该把 step 恢复成 1 吗？
+    如果是，就在 Reset handler 里加一句 <code>setStep(1);</code> —— 两次更新会被批处理成一次渲染。
+  </div>
+
+  <h3>Step 06 · Lifting state up（状态提升）</h3>
+  <p>打开 <code>lifting-state.html</code>，同一个计数器被拆成三层嵌套的组件，每个色块就是一个组件：</p>
+  <div class="table-wrap">
+    <table>
+      <thead><tr><th>组件</th><th>有 state 吗</th><th>拿到什么 props</th><th>负责什么</th></tr></thead>
+      <tbody>
+        <tr><td><b>App</b>（父）</td><td><span class="pill yes">有：count</span></td><td>无</td><td>拥有 count，创建三个 callback</td></tr>
+        <tr><td><b>Counter</b>（子）</td><td><span class="pill no">无</span></td><td>count + 三个 callback</td><td>显示 count，把 callback 继续往下传</td></tr>
+        <tr><td><b>Controls</b>（孙）</td><td><span class="pill no">无</span></td><td>三个 callback</td><td>按钮触发这些 callback</td></tr>
+      </tbody>
+    </table>
+  </div>
+  <div class="callout key">
+    <div class="callout-h">🔑 状态提升</div>
+    <div class="callout-b">按钮在 <code>Controls</code> 里，数字显示在 <code>App</code> 和 <code>Counter</code> 里，
+    所以 state 必须放在<b>需要它的所有组件的最近公共父级</b> —— 这里是 App。这就是 lifting state up。
+    数据以 props <b>向下</b>流，点击事件以 callback <b>向上</b>回报。</div>
+  </div>
+  <script type="text/plain" data-code data-lang="jsx" data-cap="usestate/lifting-state.js（完整文件）">
+const { useState } = React;
+
+// ─── Grandchild ───────────────────────────────────────────────
+// Has NO state. Calls callbacks it received as props.
+function Controls({ onIncrement, onDecrement, onReset }) {
+  return (
+    <div className="component component-controls">
+      <span className="tag tag-controls">Controls — grandchild</span>
+      <p className="component-desc">
+        No state here. Buttons call callbacks passed down as props,
+        which ultimately update state two levels up in App.
+      </p>
+      <div className="props">
+        <span className="prop prop-up">onIncrement()</span>
+        <span className="prop prop-up">onDecrement()</span>
+        <span className="prop prop-up">onReset()</span>
+      </div>
+      <div className="actions">
+        <button onClick={onIncrement}>+ Increment</button>
+        <button onClick={onDecrement}>− Decrement</button>
+        <button onClick={onReset}>Reset</button>
+      </div>
+    </div>
+  );
+}
+
+// ─── Child ────────────────────────────────────────────────────
+// Has NO state. Receives props from App and forwards them to Controls.
+function Counter({ count, onIncrement, onDecrement, onReset }) {
+  return (
+    <div className="component component-counter">
+      <span className="tag tag-counter">Counter — child</span>
+      <p className="component-desc">
+        No state here either. Displays the count it received from App
+        and passes the callbacks further down to Controls.
+      </p>
+      <div className="props">
+        <span className="prop prop-down">count = {count}</span>
+        <span className="prop prop-down">onIncrement</span>
+        <span className="prop prop-down">onDecrement</span>
+        <span className="prop prop-down">onReset</span>
+      </div>
+
+      <div className="arrow">⬇ props flow down ⬇</div>
+
+      <Controls
+        onIncrement={onIncrement}
+        onDecrement={onDecrement}
+        onReset={onReset}
+      />
+    </div>
+  );
+}
+
+// ─── Parent ───────────────────────────────────────────────────
+// Owns the state. Passes value + updater callbacks down the tree.
+function App() {
+  const [count, setCount] = useState(0);
+
+  return (
+    <div className="tree">
+      <div className="component component-app">
+        <span className="tag tag-app">App — parent</span>
+        <p className="component-desc">
+          State lives here. count and the callbacks are passed down
+          as props. When Controls calls a callback, setCount runs here.
+        </p>
+        <div className="props">
+          <span className="prop prop-state">count = {count}</span>
+        </div>
+        <div className="state-display">{count}</div>
+
+        <div className="arrow">⬇ props flow down ⬇</div>
+
+        <Counter
+          count={count}
+          onIncrement={() => setCount((c) => c + 1)}
+          onDecrement={() => setCount((c) => c - 1)}
+          onReset={() => setCount(0)}
+        />
+
+        <div className="arrow" style={{ marginTop: "10px" }}>
+          ⬆ callbacks bubble back up · state update re-renders the whole tree ⬆
+        </div>
+      </div>
+    </div>
+  );
+}
+
+const root = ReactDOM.createRoot(document.getElementById("root"));
+root.render(<App />);
+  </script>
+  <p>跟着一次点击走一遍：App 创建 <code>onIncrement={() =&gt; setCount((c) =&gt; c + 1)}</code> 传给 Counter →
+  Counter 不用它，只往下转发 → Controls 把它挂到按钮上 → 点击后函数在 App 里执行，App 的 state 变化，整棵树带着新 count 重渲染。</p>
+  <div class="callout tip">
+    <div class="callout-h">💡 用 DevTools 看一眼</div>
+    <div class="callout-b">打开 React Developer Tools 的 <b>⚛ Components</b> 标签：点 App 能看到 hooks 里的 <code>State: 0</code>；
+    点 Counter / Controls 只有 props。点按钮，看 App 的 state 变化。</div>
+  </div>
+  <div class="think">
+    <b>THINK（1 分钟）：</b>如果把 <code>useState</code> 挪进 Controls 会坏在哪？
+    按钮照样能用，但 App 和 Counter 显示不出 count 了 —— <b>父组件读不到子组件的 state，数据只向下流</b>。
+  </div>
+
+  <h3>Step 07 · 再往树下传一个 callback</h3>
+  <p>任务：在 Controls 里加一个「× 2 Double」按钮，让它把 App 里的 count 翻倍。翻倍依赖旧值，所以用 updater。</p>
+  <script type="text/plain" data-code data-lang="jsx" data-cap="① App 多传一个 callback">
+<Counter
+  count={count}
+  onIncrement={() => setCount((c) => c + 1)}
+  onDecrement={() => setCount((c) => c - 1)}
+  onReset={() => setCount(0)}
+  onDouble={() => setCount((c) => c * 2)}
+/>
+  </script>
+  <script type="text/plain" data-code data-lang="jsx" data-cap="② Counter 接收并继续转发">
+function Counter({ count, onIncrement, onDecrement, onReset, onDouble }) {
+
+<Controls
+  onIncrement={onIncrement}
+  onDecrement={onDecrement}
+  onReset={onReset}
+  onDouble={onDouble}
+/>
+  </script>
+  <script type="text/plain" data-code data-lang="jsx" data-cap="③ Controls 接收并给它一个按钮">
+function Controls({ onIncrement, onDecrement, onReset, onDouble }) {
+
+<button onClick={onReset}>Reset</button>
+<button onClick={onDouble}>× 2 Double</button>
+  </script>
+  <p>再给徽章补上：<code>&lt;span className="prop prop-down"&gt;onDouble&lt;/span&gt;</code>（Counter）与
+  <code>&lt;span className="prop prop-up"&gt;onDouble()&lt;/span&gt;</code>（Controls）。连点三次 Increment 再点 Double：3 → 6。</p>
+  <div class="callout warn">
+    <div class="callout-h">⚠️ 注意这个「中间人」</div>
+    <div class="callout-b">Counter 根本不用 <code>onDouble</code>，却还是得改它 —— 这种「只为转发而存在的 props 传递」就是
+    <b>prop drilling</b>。三层时还好，十层就很累，而那正是后面 <code>useContext</code> 要解决的问题。</div>
+  </div>
+
+  <h3>Step 08 · 规则、数组与对象、挑战和自检</h3>
+  <h4>Hooks 的两条规则</h4>
+  <ol class="steps">
+    <li>只在组件的<b>顶层</b>调用 hook，不能放进 if、循环或嵌套函数 —— React 靠<b>调用顺序</b>区分各个 <code>useState</code>，顺序必须每次渲染都一致</li>
+    <li>只在 React 组件（或你自己的自定义 hook）里调用，不要在普通 JS 函数里调用</li>
+  </ol>
+
+  <h4>数组与对象：不要原地修改</h4>
+  <div class="table-wrap">
+    <table>
+      <thead><tr><th>不要这样</th><th>要这样</th></tr></thead>
+      <tbody>
+        <tr><td><code>list.push(item)</code></td><td><code>setList((l) =&gt; [...l, item])</code></td></tr>
+        <tr><td><code>user.age = 26</code></td><td><code>setUser((u) =&gt; ({ ...u, age: 26 }))</code></td></tr>
+        <tr><td><code>list.splice(i, 1)</code></td><td><code>setList((l) =&gt; l.filter((_, j) =&gt; j !== i))</code></td></tr>
+      </tbody>
+    </table>
+  </div>
+  <p>React 靠比较新旧值来决定要不要重渲染；原地改同一个数组，它还是同一个引用，React 可能察觉不到。</p>
+
+  <h4>挑战（选做，约 10 分钟）</h4>
+  <div class="ex">
+    <p>回到 <code>index.html</code> / <code>app.js</code>，加第三份 state：<code>log</code>（初始为空数组）。
+    每点一次 Increment / Decrement / Reset 就往 log 里加一条记录（如 <code>+5</code>、<code>-5</code>、<code>reset</code>），
+    在按钮下方把 log 列成列表，并显示点击次数，再加一个 Clear log 按钮。教材给的提示：</p>
+    <script type="text/plain" data-code data-lang="jsx">
+function record(entry) {
+  setLog((l) => [...l, entry]);
+}
+    </script>
+    <details class="sol">
+      <summary>📘 参考答案：带点击日志的计数器</summary>
+      <script type="text/plain" data-code data-lang="jsx">
+const { useState } = React;
+
+function App() {
+  const [count, setCount] = useState(0);
+  const [step, setStep] = useState(1);
+  const [log, setLog] = useState([]);
+
+  const record = (entry) => setLog((l) => [...l, entry]);
+
+  const increment = () => { setCount((c) => c + step); record(`+${step}`); };
+  const decrement = () => { setCount((c) => c - step); record(`-${step}`); };
+  const reset = () => { setCount(0); record("reset"); };
+
+  return (
+    <main className="card">
+      <h1>Click log</h1>
+      <div className="count">{count}</div>
+
+      <label className="step">
+        Step size
+        <input
+          type="number"
+          min="1"
+          value={step}
+          onChange={(e) => setStep(Number(e.target.value))}
+        />
+      </label>
+
+      <div className="actions">
+        <button onClick={increment}>Increment</button>
+        <button onClick={decrement}>Decrement</button>
+        <button onClick={reset}>Reset</button>
+        <button onClick={() => setLog([])}>Clear log</button>
+      </div>
+
+      <p>{log.length} clicks recorded</p>
+      <ul>
+        {log.map((entry, i) => (
+          <li key={i}>{entry}</li>
+        ))}
+      </ul>
+    </main>
+  );
+}
+
+const root = ReactDOM.createRoot(document.getElementById("root"));
+root.render(<App />);
+      </script>
+    </details>
+  </div>
+
+  <h4>自检清单</h4>
+  <ul class="selfcheck">
+    <li><label><input type="checkbox"> 我能说出 <code>useState</code> 返回的两样东西，并解释为什么从不直接给值赋值。</label></li>
+    <li><label><input type="checkbox"> 我能解释为什么 <code>let count = 0</code> 做不了计数器。</label></li>
+    <li><label><input type="checkbox"> 我知道什么时候该传 updater（<code>setX((x) =&gt; …)</code>）而不是传值。</label></li>
+    <li><label><input type="checkbox"> 我能解释为什么一次点击里写三遍 <code>setCount(count + 1)</code> 只加 1。</label></li>
+    <li><label><input type="checkbox"> 我能在一个组件里用两个 <code>useState</code>，并写出受控输入框。</label></li>
+    <li><label><input type="checkbox"> 我能判断某份 state 该由哪个组件持有，并把修改它的 callback 传下去。</label></li>
+  </ul>
+
+  <h4>一张表总结</h4>
+  <div class="table-wrap">
+    <table>
+      <thead><tr><th>要做的事</th><th>代码</th></tr></thead>
+      <tbody>
+        <tr><td>向 React 要一份 state</td><td><code>const [count, setCount] = useState(0);</code></td></tr>
+        <tr><td>显示它</td><td>JSX 里写 <code>{count}</code></td></tr>
+        <tr><td>设成固定值</td><td><code>setCount(0)</code></td></tr>
+        <tr><td>由旧值算新值</td><td><code>setCount((c) =&gt; c + 1)</code></td></tr>
+        <tr><td>再多一份 state</td><td>再调一次：<code>const [step, setStep] = useState(1);</code></td></tr>
+        <tr><td>共享 state</td><td>放在最近的公共父级，把值和 callback 当 props 传下去</td></tr>
+      </tbody>
+    </table>
+  </div>
+
+  <h3>两个页面的完整文件</h3>
+  <script type="text/plain" data-code data-lang="html" data-cap="lifting-state.html：多引一个 lifting-state.css，脚本换成 lifting-state.js">
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <title>Lifting State Up</title>
+    <link rel="stylesheet" href="./styles.css" />
+    <link rel="stylesheet" href="./lifting-state.css" />
+  </head>
+  <body>
+    <div id="root"></div>
+
+    <script src="https://unpkg.com/react@18/umd/react.development.js" crossorigin />
+    <script src="https://unpkg.com/react-dom@18/umd/react-dom.development.js" crossorigin />
+    <script src="https://unpkg.com/@babel/standalone/babel.min.js" />
+    <script type="text/babel" src="./lifting-state.js" />
+  </body>
+</html>
+  </script>
+  <details class="sol">
+    <summary>📘 styles.css（计数器页面样式全文）</summary>
+    <script type="text/plain" data-code data-lang="css">
+:root {
+  --bg: #f4f1ea;
+  --card: #fffdf8;
+  --text: #1f2937;
+  --accent: #b45309;
+  --accent-hover: #92400e;
+}
+
+* { box-sizing: border-box; }
+
+body {
+  margin: 0;
+  min-height: 100vh;
+  font-family: "Avenir Next", "Segoe UI", sans-serif;
+  display: grid;
+  place-items: center;
+  background: radial-gradient(circle at top left, #fff8e7, var(--bg));
+  color: var(--text);
+}
+
+.card {
+  width: min(92vw, 420px);
+  background: var(--card);
+  border: 1px solid #f3e8cf;
+  border-radius: 16px;
+  padding: 24px;
+  box-shadow: 0 12px 28px rgba(0, 0, 0, 0.08);
+}
+
+h1 { margin: 0 0 8px; font-size: 1.5rem; }
+p  { margin: 0 0 16px; }
+
+.count {
+  font-size: 2rem;
+  font-weight: 700;
+  margin-bottom: 16px;
+}
+
+.actions { display: flex; gap: 8px; }
+
+button {
+  border: none;
+  background: var(--accent);
+  color: #fff;
+  padding: 10px 14px;
+  border-radius: 10px;
+  cursor: pointer;
+  font-weight: 600;
+}
+
+button:hover { background: var(--accent-hover); }
+    </script>
+  </details>
+  <details class="sol">
+    <summary>📘 lifting-state.css（三层色块与 props 徽章，节选）</summary>
+    <script type="text/plain" data-code data-lang="css">
+.component-app      { background: #fef3c7; border: 2px solid #f59e0b; }
+.component-counter  { background: #dbeafe; border: 2px dashed #3b82f6; margin-top: 12px; }
+.component-controls { background: #dcfce7; border: 2px dashed #22c55e; margin-top: 12px; }
+
+.prop-down::before  { content: "⬇ "; }
+.prop-up::before    { content: "⬆ "; }
+.prop-state::before { content: "🗄 "; }
+
+.state-display { font-size: 2.2rem; font-weight: 800; color: #92400e; }
+    </script>
+  </details>
+
+  <div class="done-row"><label class="done-label"><input type="checkbox" class="done-check" data-key="statelab"><span>标记「useState 实验课」已完成</span></label></div>
+</section>
+
 <section class="card" id="useeffect">
-  <h2><span class="sec-num">3</span>useEffect：处理副作用</h2>
+  <h2><span class="sec-num">4</span>useEffect：处理副作用</h2>
   <p class="lead"><code>useEffect</code> 用来在函数组件里执行<b>副作用</b>：请求数据、订阅、定时器、手动改 DOM。
   它相当于 class 组件中 <code>componentDidMount</code> + <code>componentDidUpdate</code> + <code>componentWillUnmount</code> 三者的合体。</p>
 
@@ -814,7 +1439,7 @@ export default WindowSizeTracker;
 </section>
 
 <section class="card" id="usecontext">
-  <h2><span class="sec-num">4</span>useContext：跨层级共享数据</h2>
+  <h2><span class="sec-num">5</span>useContext：跨层级共享数据</h2>
   <p class="lead">Context 用来在组件树中共享「类全局」的数据，<b>不必一层层传 props</b>。它常与 <code>useState</code> 搭配：
   顶层用 state 存数据，再用 Provider 把数据（以及修改函数）发下去。</p>
 
@@ -1202,7 +1827,7 @@ export default function App() {
 </section>
 
 <section class="card" id="usememo">
-  <h2><span class="sec-num">5</span>useMemo：缓存计算结果</h2>
+  <h2><span class="sec-num">6</span>useMemo：缓存计算结果</h2>
   <p class="lead">用 <code>useMemo</code> 可以避免一次昂贵的计算在<b>无关的重渲染</b>中被反复执行。</p>
 
   <h3>学习目标</h3>
@@ -1356,7 +1981,7 @@ export default ScorePanel;
 </section>
 
 <section class="card" id="useref">
-  <h2><span class="sec-num">6</span>useRef：记住值，但不触发渲染</h2>
+  <h2><span class="sec-num">7</span>useRef：记住值，但不触发渲染</h2>
   <p class="lead"><code>useRef</code> 创建一个<b>跨渲染保持不变的可变引用</b>。和 state 不同，修改 <code>ref.current</code>
   <b>不会触发重新渲染</b>。它常用于：直接访问 DOM 元素、保存可变值、保存不需要驱动渲染的数据。</p>
 
@@ -1737,7 +2362,7 @@ export default ImageGallery;
 </section>
 
 <section class="card" id="quiz">
-  <h2><span class="sec-num">7</span>自测题</h2>
+  <h2><span class="sec-num">8</span>自测题</h2>
   <p class="lead">点了选项会立刻给出反馈与解析。全部做完，你就能判断自己是否真的掌握了这五个 Hook。</p>
 
   <div class="quiz" data-answer="1" data-fb="修改 ref.current 不会触发渲染，值被保留下来，直到某次由 state 引起的重渲染才会显示在界面上。">
@@ -1839,11 +2464,44 @@ export default ImageGallery;
     <p class="fb"></p>
   </div>
 
+  <div class="quiz" data-answer="1" data-fb="一次渲染中 count 是固定快照（比如 0），三行都等于「设成 1」；而 updater 会排队执行，每个拿到前一个的结果，所以是 +3。另外 React 会把同一次事件里的多次更新批处理成一次渲染。">
+    <p class="q">10. 一次点击里连续写三遍 <code>setCount(count + 1)</code>，数字会加几？</p>
+    <div class="opts">
+      <button class="opt">A. 加 3</button>
+      <button class="opt">B. 只加 1</button>
+      <button class="opt">C. 加 0，因为被覆盖了</button>
+      <button class="opt">D. 触发三次渲染</button>
+    </div>
+    <p class="fb"></p>
+  </div>
+
+  <div class="quiz" data-answer="2" data-fb="setter 会在渲染过程中立即执行 → 触发新渲染 → 再次执行，React 直接报 “Too many re-renders”，页面变白。必须写成 onClick={() => setCount(0)}。">
+    <p class="q">11. 把 <code>onClick={() =&gt; setCount(0)}</code> 写成 <code>onClick={setCount(0)}</code> 会怎样？</p>
+    <div class="opts">
+      <button class="opt">A. 效果完全一样</button>
+      <button class="opt">B. 点击时才执行一次</button>
+      <button class="opt">C. 渲染时立即执行，陷入循环并报 Too many re-renders</button>
+      <button class="opt">D. 什么都不会发生</button>
+    </div>
+    <p class="fb"></p>
+  </div>
+
+  <div class="quiz" data-answer="3" data-fb="lifting state up：把 state 放在需要它的所有组件的最近公共父级，值以 props 向下传，修改动作以 callback 向上回报。父组件读不到子组件的 state。">
+    <p class="q">12. 按钮在最底层的 Controls、数字显示在 App 和 Counter，state 应该放在哪？</p>
+    <div class="opts">
+      <button class="opt">A. 放在 Controls，因为它有按钮</button>
+      <button class="opt">B. 每个组件各放一份</button>
+      <button class="opt">C. 放在 Counter 里再往下传</button>
+      <button class="opt">D. 放在最近的公共父级 App，再把值和 callback 传下去</button>
+    </div>
+    <p class="fb"></p>
+  </div>
+
   <div class="done-row"><label class="done-label"><input type="checkbox" class="done-check" data-key="quiz"><span>标记「自测题」已完成</span></label></div>
 </section>
 
 <section class="card" id="cheatsheet">
-  <h2><span class="sec-num">8</span>速查表</h2>
+  <h2><span class="sec-num">9</span>速查表</h2>
   <p class="lead">写代码时忘了用法，回来翻这一页就够了。</p>
 
   <h3>五个 Hook 的签名</h3>
@@ -1921,7 +2579,8 @@ const result = useMemo(() => heavyCompute(input), [input]);
 <footer class="foot">
   内容整理自本文件夹中的教材：<code>Create React Apps with Vite JS.pdf</code> · <code>useState-tutorial.pdf</code> ·
   <code>useEffect-tutorial.pdf</code> · <code>useContext.pdf</code> · <code>useContext-tutorial.pdf</code> ·
-  <code>useMemo Tutorial.pdf</code> · <code>useRef-tutorial.pdf</code> · <code>useEffect-dependencies/</code>
+  <code>useMemo Tutorial.pdf</code> · <code>useRef-tutorial.pdf</code> · <code>useState-Lab.pdf</code> ·
+  <code>useEffect-dependencies/</code> · <code>usestate/</code>
 </footer>
 
   </main>
@@ -1969,7 +2628,7 @@ const result = useMemo(() => heavyCompute(input), [input]);
           if (KEYWORDS.indexOf(t) > -1) return span('tok-key', t);
           if (BUILTINS.indexOf(t) > -1) return span('tok-builtin', t);
           if (/^\s*\(/.test(rest)) return span('tok-func', t);
-          if (/^\s*=(?!=)/.test(rest)) return span('tok-attr', t);
+          if (/^\s*[=:](?!=)/.test(rest)) return span('tok-attr', t);
           // 紧跟在 < 或 </ 后面的大写标识符 = 组件名
           if (/^[A-Z]/.test(t) && /<\/?$/.test(src.slice(0, m.index))) return span('tok-tag', t);
           return esc(t);
