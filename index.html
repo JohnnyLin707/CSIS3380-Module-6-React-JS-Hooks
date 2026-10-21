@@ -4,7 +4,6 @@
 <meta charset="UTF-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1.0" />
 <title>React Hooks 学习手册 · Module 6</title>
-<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/highlight.js@11.9.0/styles/atom-one-dark.min.css" />
 <style>
   :root{
     --bg:#f4f6fb; --bg2:#eef1f9; --card:#ffffff; --ink:#161a2b; --ink-soft:#5a6484;
@@ -124,6 +123,16 @@
   pre{margin:0;padding:16px;overflow-x:auto;background:var(--code-bg)!important}
   pre code.hljs{background:transparent!important;padding:0;font-size:13.4px;line-height:1.65}
   .code-cap{font-size:13.2px;color:var(--ink-soft);margin:8px 0 0}
+  pre code{color:#e6edf3}
+  .tok-com{color:#8b9aa7;font-style:italic}
+  .tok-str{color:#98c379}
+  .tok-num{color:#d19a66}
+  .tok-key{color:#c678dd}
+  .tok-func{color:#61afef}
+  .tok-tag{color:#e06c75}
+  .tok-attr{color:#e5c07b}
+  .tok-builtin{color:#56b6c2}
+  .tok-punc{color:#9aa7bd}
   details.sol{margin:14px 0;border:1px solid var(--line);border-radius:12px;background:var(--card);overflow:hidden}
   details.sol summary{cursor:pointer;padding:11px 16px;font-weight:700;background:var(--accent-soft);font-size:14.5px}
   details.sol[open] summary{border-bottom:1px solid var(--line)}
@@ -1920,9 +1929,84 @@ const result = useMemo(() => heavyCompute(input), [input]);
 
 <button class="to-top" id="toTop" title="回到顶部">↑</button>
 
-<script src="https://cdn.jsdelivr.net/npm/highlight.js@11.9.0/highlight.min.js"></script>
 <script>
 (function () {
+  // ---------- 0. 内置语法高亮（不依赖外部 CDN） ----------
+  var KEYWORDS = ('const let var function return if else for while do break continue switch case default import export from as ' +
+    'new await async try catch finally throw class extends super this typeof instanceof in of delete void yield null undefined ' +
+    'true false static').split(' ');
+  var BUILTINS = ('React ReactDOM console window document fetch JSON Promise Math Object Array String Boolean ' +
+    'setTimeout setInterval clearInterval clearTimeout localStorage requestAnimationFrame').split(' ');
+
+  function esc(s) {
+    return s.replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;');
+  }
+  function span(cls, txt) {
+    return '<span class="' + cls + '">' + esc(txt) + '</span>';
+  }
+  function run(src, re, classify) {
+    var out = '', last = 0, m;
+    re.lastIndex = 0;
+    while ((m = re.exec(src)) !== null) {
+      if (m[0] === '') { re.lastIndex++; continue; }
+      out += esc(src.slice(last, m.index)) + classify(m);
+      last = m.index + m[0].length;
+    }
+    return out + esc(src.slice(last));
+  }
+
+  function paintJS(src) {
+    return run(src,
+      /(\/\/[^\n]*|\/\*[\s\S]*?\*\/)|(`(?:\\[\s\S]|[^\\`])*`|'(?:\\[\s\S]|[^\\'\n])*'|"(?:\\[\s\S]|[^\\"\n])*")|(\b\d+(?:\.\d+)?\b)|(<\/?[A-Za-z][\w.]*)|([A-Za-z_$][\w$]*)|([^\sA-Za-z0-9_$]+)/g,
+      function (m) {
+        var t = m[0];
+        if (m[1]) return span('tok-com', t);
+        if (m[2]) return span('tok-str', t);
+        if (m[3]) return span('tok-num', t);
+        if (m[4]) return span('tok-tag', t);
+        if (m[5]) {
+          var rest = src.slice(m.index + t.length);
+          if (KEYWORDS.indexOf(t) > -1) return span('tok-key', t);
+          if (BUILTINS.indexOf(t) > -1) return span('tok-builtin', t);
+          if (/^\s*\(/.test(rest)) return span('tok-func', t);
+          if (/^\s*=(?!=)/.test(rest)) return span('tok-attr', t);
+          // 紧跟在 < 或 </ 后面的大写标识符 = 组件名
+          if (/^[A-Z]/.test(t) && /<\/?$/.test(src.slice(0, m.index))) return span('tok-tag', t);
+          return esc(t);
+        }
+        return span('tok-punc', t);
+      });
+  }
+
+  function paintBash(src) {
+    return run(src, /(#[^\n]*)|("[^"]*"|'[^']*')|(--?[A-Za-z][\w-]*)|([A-Za-z][\w.-]*)/g,
+      function (m) {
+        var t = m[0];
+        if (m[1]) return span('tok-com', t);
+        if (m[2]) return span('tok-str', t);
+        if (m[3]) return span('tok-attr', t);
+        var before = src.slice(0, m.index);
+        return /(^|\n)\s*$/.test(before) ? span('tok-func', t) : esc(t);
+      });
+  }
+
+  function paintHTML(src) {
+    return run(src, /(<!--[\s\S]*?-->)|(<!doctype[^>]*>)|(<\/?[a-zA-Z][\w-]*)|([a-zA-Z-][\w:-]*)(?=\s*=)|("[^"]*"|'[^']*')|([\/?>]+)/g,
+      function (m) {
+        if (m[1] || m[2] || m[3]) return span('tok-tag', m[0]);
+        if (m[4]) return span('tok-attr', m[0]);
+        if (m[5]) return span('tok-str', m[0]);
+        return span('tok-punc', m[0]);
+      });
+  }
+
+  function paint(el, lang) {
+    var src = el.textContent;
+    el.innerHTML = lang === 'html' ? paintHTML(src)
+      : lang === 'bash' ? paintBash(src)
+      : paintJS(src);
+  }
+
   // ---------- 1. 把 <script type="text/plain"> 里的源码渲染成代码块 ----------
   document.querySelectorAll('script[data-code]').forEach(function (s) {
     var lang = s.getAttribute('data-lang') || 'jsx';
@@ -1976,19 +2060,7 @@ const result = useMemo(() => heavyCompute(input), [input]);
       }
     });
 
-    if (window.hljs && hljs.getLanguage(lang)) {
-      try { hljs.highlightElement(codeEl); } catch (e) {}
-    }
-  });
-
-  // 参考答案里的代码块：<details> 打开时再高亮（省一点开销，也避免高亮失败）
-  document.querySelectorAll('details.sol').forEach(function (d) {
-    d.addEventListener('toggle', function () {
-      if (!d.open || !window.hljs) return;
-      d.querySelectorAll('code[class^="language-"]').forEach(function (c) {
-        if (c.dataset.hl !== '1') { try { hljs.highlightElement(c); } catch (e) {} c.dataset.hl = '1'; }
-      });
-    });
+    paint(codeEl, lang);
   });
 
   // ---------- 2. 主题切换 ----------
