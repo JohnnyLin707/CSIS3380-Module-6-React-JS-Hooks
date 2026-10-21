@@ -1,0 +1,99 @@
+:root {
+  --bg-start: #0b1020;
+  --bg-mid: #1a2a5a;
+  --bg-end: #0f6d5f;
+  --card-bg: rgba(255, 255, 255, 0.14);
+  --card-border: rgba(255, 255, 255, 0.28);
+  --text-main: #f5f7ff;
+  --text-soft: #d7def8;
+  --shadow: 0 18px 45px rgba(3, 7, 18, 0.4);
+}
+
+* {
+  box-sizing: border-box;
+}
+
+html,
+body {
+  margin: 0;
+  min-height: 100%;
+}
+
+body {
+  min-height: 100vh;
+  display: grid;
+  place-items: center;
+  padding: 24px;
+  color: var(--text-main);
+  font-family: "Space Grotesk", "Avenir Next", "Segoe UI", sans-serif;
+  background:
+    radial-gradient(circle at 15% 20%, rgba(255, 255, 255, 0.18) 0, transparent 36%),
+    radial-gradient(circle at 85% 80%, rgba(120, 255, 214, 0.22) 0, transparent 34%),
+    linear-gradient(135deg, var(--bg-start), var(--bg-mid) 48%, var(--bg-end));
+}
+
+#root {
+  width: min(640px, 100%);
+}
+
+#root > div {
+  position: relative;
+  overflow: hidden;
+  text-align: center;
+  padding: clamp(28px, 5vw, 52px);
+  border-radius: 22px;
+  background: var(--card-bg);
+  border: 1px solid var(--card-border);
+  box-shadow: var(--shadow);
+  backdrop-filter: blur(10px);
+  animation: rise-in 700ms ease both;
+}
+
+#root > div::before {
+  content: "";
+  position: absolute;
+  inset: -120% -40% auto;
+  height: 180%;
+  background: linear-gradient(120deg, transparent 25%, rgba(255, 255, 255, 0.22), transparent 75%);
+  transform: rotate(8deg);
+  animation: sheen 5s linear infinite;
+  pointer-events: none;
+}
+
+p {
+  margin: 0;
+  letter-spacing: 0.02em;
+  color: var(--text-soft);
+  font-size: clamp(1.15rem, 3.2vw, 1.9rem);
+}
+
+@keyframes rise-in {
+  from {
+    opacity: 0;
+    transform: translateY(18px) scale(0.98);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0) scale(1);
+  }
+}
+
+@keyframes sheen {
+  0% {
+    transform: translateX(-45%) rotate(8deg);
+  }
+  100% {
+    transform: translateX(45%) rotate(8deg);
+  }
+}
+
+@media (max-width: 520px) {
+  body {
+    padding: 14px;
+  }
+
+  #root > div {
+    border-radius: 16px;
+    padding: 24px 18px;
+  }
+}
