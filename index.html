@@ -74,6 +74,7 @@
     display:inline-grid;place-items:center;width:34px;height:34px;border-radius:10px;flex:0 0 34px;
     background:linear-gradient(135deg,var(--accent),var(--accent2));color:#fff;font-size:16px;font-weight:800
   }
+  .sec-num.sm{flex:0 0 46px;width:46px;font-size:13px}
   h3{font-size:clamp(17px,1.6vw,20px);margin:30px 0 10px;padding-left:11px;border-left:4px solid var(--accent)}
   h4{font-size:16px;margin:20px 0 8px}
   .lead{color:var(--ink-soft);margin:8px 0 4px;font-size:15.5px}
@@ -192,7 +193,7 @@
   <div class="spacer"></div>
   <div class="progress-wrap">
     <div class="progress-track"><div class="progress-fill" id="pfill"></div></div>
-    <div class="progress-text" id="ptext">0 / 10</div>
+    <div class="progress-text" id="ptext">0 / 17</div>
   </div>
   <button class="icon-btn" id="themeBtn" title="切换深色/浅色">🌙</button>
 </header>
@@ -204,12 +205,19 @@
     <nav id="nav">
       <a href="#overview"><span class="n">0</span>课程总览</a>
       <a href="#vite"><span class="n">1</span>Vite 环境搭建</a>
+      <a href="#fromcdn"><span class="n">1.1</span>CDN → Vite</a>
       <a href="#usestate"><span class="n">2</span>useState</a>
       <a href="#statelab"><span class="n">3</span>useState 实验课</a>
+      <a href="#statelab-cp"><span class="n">3.1</span>Lab 检查点代码</a>
       <a href="#useeffect"><span class="n">4</span>useEffect</a>
       <a href="#usecontext"><span class="n">5</span>useContext</a>
+      <a href="#contextsbs"><span class="n">5.1</span>useContext 分步</a>
       <a href="#usememo"><span class="n">6</span>useMemo</a>
+      <a href="#memosbs"><span class="n">6.1</span>useMemo 分步</a>
       <a href="#useref"><span class="n">7</span>useRef</a>
+      <a href="#refsbs"><span class="n">7.1</span>useRef 分步</a>
+      <a href="#transitionsbs"><span class="n">7.2</span>useTransition 分步</a>
+      <a href="#movienight"><span class="n">10</span>Movie Night 项目</a>
       <a href="#quiz"><span class="n">8</span>自测题</a>
       <a href="#cheatsheet"><span class="n">9</span>速查表</a>
     </nav>
@@ -230,6 +238,9 @@
     <div class="mini-card"><span class="mini-tag">HOOK</span><b>useContext</b><p>跨层级共享数据，解决 prop drilling（逐层透传 props）。</p></div>
     <div class="mini-card"><span class="mini-tag">HOOK</span><b>useMemo</b><p>缓存计算结果，只在依赖变化时重新计算。</p></div>
     <div class="mini-card"><span class="mini-tag">HOOK</span><b>useRef</b><p>保存不触发渲染的可变值，或直接操作 DOM 元素。</p></div>
+    <div class="mini-card"><span class="mini-tag">LAB</span><b>useState 实验课</b><p>75 分钟动手实验：mini 计数器 → 写坏它 → 加步长 → 三层组件树的状态提升。</p></div>
+    <div class="mini-card"><span class="mini-tag">代码</span><b>各 Hook 分步代码</b><p>useContext / useMemo / useRef / useTransition 的 Step-by-Step 文件夹，每步一个可运行文件。</p></div>
+    <div class="mini-card"><span class="mini-tag">项目</span><b>Movie Night Part 3</b><p>一个观影清单应用，9 个检查点把本模块所有 Hook 串起来。</p></div>
   </div>
 
   <h3>推荐学习路线</h3>
@@ -242,6 +253,7 @@
     <li><b>useMemo</b>：需要时才优化，先写对再优化</li>
     <li><b>useRef</b>：区分「要渲染的值」和「只要记住的值」</li>
     <li><b>做练习 + 自测</b>：本页每个练习都配了可展开的参考答案</li>
+    <li><b>读项目代码</b>：各 Hook 的分步代码与 Movie Night 综合项目（代码均已加中文注释）</li>
   </ol>
 
   <h3>五个 Hook 一张表看懂</h3>
@@ -313,6 +325,116 @@ npm run dev
   </div>
 
   <div class="done-row"><label class="done-label"><input type="checkbox" class="done-check" data-key="vite"><span>标记「Vite」已完成</span></label></div>
+</section>
+
+<section class="card" id="fromcdn">
+  <h2><span class="sec-num sm">1.1</span>从 CDN 到 Vite</h2>
+  <p class="lead"><code>From-CDN-to-Vite-code/timer-vite/</code> 把本模块前面的 CDN 计时器搬进了 Vite 工程。
+  代码几乎没变，变的是「怎么引入 React」和「怎么让页面跑起来」。</p>
+
+  <h3>CDN 写法 vs Vite 写法</h3>
+  <div class="table-wrap">
+    <table>
+      <thead><tr><th></th><th>CDN（本模块前几个项目）</th><th>Vite（本项目）</th></tr></thead>
+      <tbody>
+        <tr><td>引入 React</td><td><code>const { useState } = React;</code>（全局变量）</td><td><code>import { useState } from 'react';</code></td></tr>
+        <tr><td>JSX 翻译</td><td>浏览器里的 Babel（<code>type="text/babel"</code>）</td><td>打包时由 <code>@vitejs/plugin-react</code> 处理</td></tr>
+        <tr><td>入口</td><td><code>&lt;script type="text/babel" src="./app.js"&gt;</code></td><td><code>src/main.jsx</code> → <code>createRoot(...).render()</code></td></tr>
+        <tr><td>启动</td><td>Live Server</td><td><code>npm run dev</code></td></tr>
+        <tr><td>样式</td><td><code>&lt;link rel="stylesheet"&gt;</code></td><td>JS 里 <code>import './index.css'</code></td></tr>
+      </tbody>
+    </table>
+  </div>
+
+  <h3>入口文件 main.jsx</h3>
+  <script type="text/plain" data-code data-lang="jsx" data-cap="src/main.jsx：挂载点 + 开发环境下的严格模式">
+import { StrictMode } from 'react'
+import { createRoot } from 'react-dom/client'
+import './index.css'
+import App from './App.jsx'
+
+createRoot(document.getElementById('root')).render(
+  <StrictMode>
+    <App />
+  </StrictMode>,
+)
+  </script>
+  <ul class="checks">
+    <li><code>createRoot</code> 接管 <code>index.html</code> 里的 <code>#root</code> 节点</li>
+    <li><code>StrictMode</code> 只在开发环境生效：故意双调用组件，帮你发现不纯的副作用</li>
+  </ul>
+
+  <h3>App.jsx：控制显示 / 隐藏</h3>
+  <script type="text/plain" data-code data-lang="jsx" data-cap="src/App.jsx">
+import { useState } from 'react';
+import Timer from './components/Timer.jsx';
+import './App.css';
+
+export default function App() {
+  // 布尔 state：决定 Timer 是渲染还是被换掉
+  const [showTimer, setShowTimer] = useState(true);
+
+  return (
+    <main className="card">
+      <h1>Timer, now in Vite</h1>
+      {/* 条件渲染：showTimer 为 true 才挂载 Timer */}
+      {showTimer ? <Timer /> : <p>The timer is hidden.</p>}
+      {/* 函数式更新：取反，不依赖当前值快照 */}
+      <button onClick={() => setShowTimer((show) => !show)}>
+        {showTimer ? 'Hide timer' : 'Show timer'}
+      </button>
+    </main>
+  );
+}
+  </script>
+  <p>点 Hide timer 时 <code>Timer</code> 会从树上被移除 —— 下一段代码的清理函数正是为此而写。</p>
+
+  <h3>Timer.jsx：定时器 + 清理</h3>
+  <script type="text/plain" data-code data-lang="jsx" data-cap="src/components/Timer.jsx">
+import { useState, useEffect } from 'react';
+
+export default function Timer() {
+  // 组件自己的 state：已过去的秒数
+  const [seconds, setSeconds] = useState(0);
+
+  useEffect(() => {
+    console.log('Timer started');
+    const intervalId = setInterval(() => {
+      // 函数式更新：每次拿到最新秒数 +1
+      setSeconds((s) => s + 1);
+    }, 1000);
+
+    // 清理函数：组件卸载（点了 Hide timer）或 effect 重跑前执行
+    return () => {
+      clearInterval(intervalId);
+      console.log('Timer stopped');
+    };
+  }, []); // 空依赖数组：只挂载一次
+
+  return <p className="big">{seconds} s</p>;
+}
+  </script>
+  <div class="callout key">
+    <div class="callout-h">🔑 这个项目在讲什么</div>
+    <div class="callout-b">代码逻辑和 CDN 版完全一样，差别只在工程化：<code>import</code> 取代全局变量、Vite 在打包时编译 JSX、
+    样式也变成模块导入。<b>唯一新增的 React 知识点</b>是「条件渲染会卸载组件，于是清理函数会执行」—— 打开 Console 点 Hide/Show 就能看到成对的
+    <code>Timer started</code> / <code>Timer stopped</code>。</div>
+  </div>
+
+  <h3>vite.config.js 与 index.html</h3>
+  <script type="text/plain" data-code data-lang="jsx" data-cap="vite.config.js：只需要一个 React 插件">
+import react from '@vitejs/plugin-react'
+import { defineConfig } from 'vite'
+
+// https://vite.dev/config/
+export default defineConfig({
+  plugins: [react()],
+})
+  </script>
+  <p>Vite 的 <code>index.html</code> 放在项目根目录，并且只有一个 script 标签：<code>&lt;script type="module" src="/src/main.jsx"&gt;</code>。
+  package.json 里常用三条命令：<code>npm run dev</code>（开发）、<code>npm run build</code>（产出 dist/）、<code>npm run preview</code>（预览产物）。</p>
+
+  <div class="done-row"><label class="done-label"><input type="checkbox" class="done-check" data-key="fromcdn"><span>标记「CDN → Vite」已完成</span></label></div>
 </section>
 
 <section class="card" id="usestate">
@@ -1071,6 +1193,204 @@ button:hover { background: var(--accent-hover); }
   <div class="done-row"><label class="done-label"><input type="checkbox" class="done-check" data-key="statelab"><span>标记「useState 实验课」已完成</span></label></div>
 </section>
 
+<section class="card" id="statelab-cp">
+  <h2><span class="sec-num sm">3.1</span>useState Lab 检查点代码</h2>
+  <p class="lead">上面实验课每一步都有一个对应的 <code>useState-Lab-checkpoint-codes/step-XX/</code> 文件夹。
+  这里只挑<b>和前面代码不一样的几个关键检查点</b>，加上教材最后的挑战答案，全部代码都加上了中文注释。</p>
+  <div class="table-wrap">
+    <table>
+      <thead><tr><th>检查点</th><th>看点</th></tr></thead>
+      <tbody>
+        <tr><td><code>step-02-render-log/app-cdn.js</code></td><td>在 state 下面加 <code>console.log</code>，观察每次渲染</td></tr>
+        <tr><td><code>step-04-updater-function/app.js</code></td><td>三次 updater 的 <code>+3</code> 按钮</td></tr>
+        <tr><td><code>step-07-double-button/lifting-state.js</code></td><td>状态提升 + 新增 <code>onDouble</code> 回调</td></tr>
+        <tr><td><code>challenge-click-log/app.js</code></td><td>挑战答案：带点击日志的计数器</td></tr>
+      </tbody>
+    </table>
+  </div>
+
+  <h3>Step 02 · 在渲染里打日志</h3>
+  <script type="text/plain" data-code data-lang="jsx" data-cap="step-02-render-log/app-cdn.js（与 usestate/app-cdn.js 相比只多了一行 console.log）">
+const { useState } = React;
+
+function Counter() {
+    // 声明一个 state 变量 count，初始值 0
+    const [count, setCount] = useState(0);
+
+    // 每次 Counter() 被 React 调用都会打印：一行 = 一次渲染
+    console.log("Counter rendered, count =", count);
+
+    return (
+        <div>
+            <p>You clicked {count} times</p>
+            <button onClick={() => setCount(count + 1)}>
+                Click me
+            </button>
+        </div>
+    );
+}
+function App(props) {
+    return (
+        <div className='App'>
+            <Counter />
+        </div>
+    );
+}
+const root = ReactDOM.createRoot(document.getElementById("root"));
+root.render(<App />);
+  </script>
+
+  <h3>Step 04 · 三次 updater 的 +3 按钮</h3>
+  <script type="text/plain" data-code data-lang="jsx" data-cap="step-04-updater-function/app.js 的按钮部分">
+<div className="count">{count}</div>
+<div className="actions">
+  <button onClick={() => setCount((c) => c + 1)}>Increment</button>
+  <button onClick={() => setCount((c) => c - 1)}>Decrement</button>
+  <button onClick={() => setCount(0)}>Reset</button>
+
+  {/* +3：三次 updater 排队执行，每个都拿到前一个的结果 */}
+  <button
+    onClick={() => {
+      setCount((c) => c + 1);
+      setCount((c) => c + 1);
+      setCount((c) => c + 1);
+    }}
+  >
+    +3
+  </button>
+</div>
+  </script>
+
+  <h3>Step 07 · 状态提升 + 新回调 onDouble</h3>
+  <p>与 <code>usestate/lifting-state.js</code> 相比，只多了 <code>onDouble</code> 这条链路（App 创建 → Counter 转发 → Controls 使用）：</p>
+  <script type="text/plain" data-code data-lang="jsx" data-cap="step-07-double-button/lifting-state.js（节选：三层的差异部分）">
+// ─── Grandchild：多了 onDouble ────────────────────────────────
+function Controls({ onIncrement, onDecrement, onReset, onDouble }) {
+  return (
+    <div className="component component-controls">
+      <span className="tag tag-controls">Controls — grandchild</span>
+      <div className="props">
+        <span className="prop prop-up">onIncrement()</span>
+        <span className="prop prop-up">onDecrement()</span>
+        <span className="prop prop-up">onReset()</span>
+        <span className="prop prop-up">onDouble()</span>
+      </div>
+      <div className="actions">
+        <button onClick={onIncrement}>+ Increment</button>
+        <button onClick={onDecrement}>− Decrement</button>
+        <button onClick={onReset}>Reset</button>
+        <button onClick={onDouble}>× 2 Double</button>
+      </div>
+    </div>
+  );
+}
+
+// ─── Child：自己不用 onDouble，但必须接收并转发 ──────────────────
+function Counter({ count, onIncrement, onDecrement, onReset, onDouble }) {
+  return (
+    <div className="component component-counter">
+      <span className="tag tag-counter">Counter — child</span>
+      <div className="props">
+        <span className="prop prop-down">count = {count}</span>
+        <span className="prop prop-down">onIncrement</span>
+        <span className="prop prop-down">onDecrement</span>
+        <span className="prop prop-down">onReset</span>
+        <span className="prop prop-down">onDouble</span>
+      </div>
+      <Controls
+        onIncrement={onIncrement}
+        onDecrement={onDecrement}
+        onReset={onReset}
+        onDouble={onDouble}
+      />
+    </div>
+  );
+}
+
+// ─── Parent：state 在这里，新增一个翻倍回调 ─────────────────────
+function App() {
+  const [count, setCount] = useState(0);
+
+  return (
+    <div className="tree">
+      <div className="component component-app">
+        <span className="tag tag-app">App — parent</span>
+        <div className="state-display">{count}</div>
+        <Counter
+          count={count}
+          onIncrement={() => setCount((c) => c + 1)}
+          onDecrement={() => setCount((c) => c - 1)}
+          onReset={() => setCount(0)}
+          onDouble={() => setCount((c) => c * 2)}
+        />
+      </div>
+    </div>
+  );
+}
+  </script>
+
+  <h3>挑战答案 · 点击日志</h3>
+  <script type="text/plain" data-code data-lang="jsx" data-cap="challenge-click-log/app.js（完整文件）">
+const { useState } = React;
+
+function App() {
+  // 三份互相独立的 state：当前值、步长、操作日志
+  const [count, setCount] = useState(0);
+  const [step, setStep] = useState(1);
+  const [log, setLog] = useState([]);
+
+  // 往日志里追加一条：永远用 updater + 展开运算符生成新数组
+  function record(entry) {
+    setLog((l) => [...l, entry]);
+  }
+
+  return (
+    <main className="card">
+      <h1>React App via CDN</h1>
+      <p>No build step needed. This runs directly in the browser.</p>
+      <div className="count">{count}</div>
+
+      {/* 受控输入：input 的值来自 state，每次输入都写回 state */}
+      <label className="step">
+        Step size
+        <input
+          type="number"
+          min="1"
+          value={step}
+          onChange={(e) => setStep(Number(e.target.value))}
+        />
+      </label>
+
+      <div className="actions">
+        <button onClick={() => { setCount((c) => c + step); record(`+${step}`); }}>Increment</button>
+        <button onClick={() => { setCount((c) => c - step); record(`-${step}`); }}>Decrement</button>
+        <button onClick={() => { setCount(0); record("reset"); }}>Reset</button>
+        <button onClick={() => setLog([])}>Clear log</button>
+      </div>
+
+      <p className="log-title">{log.length} clicks</p>
+      <ul className="log">
+        {log.map((entry, i) => (
+          <li key={i}>{entry}</li>
+        ))}
+      </ul>
+    </main>
+  );
+}
+
+const root = ReactDOM.createRoot(document.getElementById("root"));
+root.render(<App />);
+  </script>
+  <div class="callout tip">
+    <div class="callout-h">💡 读这段代码的三个要点</div>
+    <div class="callout-b">① 日志用 updater <code>setLog((l) =&gt; [...l, entry])</code>，不碰旧数组；
+    ② <code>key={i}</code> 只是权宜之计（列表不会重排），更推荐给每条日志一个 id；
+    ③ 一个事件里多次 <code>setState</code> 会被 React 批处理成一次渲染。</div>
+  </div>
+
+  <div class="done-row"><label class="done-label"><input type="checkbox" class="done-check" data-key="statelab-cp"><span>标记「Lab 检查点代码」已完成</span></label></div>
+</section>
+
 <section class="card" id="useeffect">
   <h2><span class="sec-num">4</span>useEffect：处理副作用</h2>
   <p class="lead"><code>useEffect</code> 用来在函数组件里执行<b>副作用</b>：请求数据、订阅、定时器、手动改 DOM。
@@ -1826,6 +2146,323 @@ export default function App() {
   <div class="done-row"><label class="done-label"><input type="checkbox" class="done-check" data-key="usecontext"><span>标记「useContext」已完成</span></label></div>
 </section>
 
+<section class="card" id="contextsbs">
+  <h2><span class="sec-num sm">5.1</span>useContext 分步教程代码</h2>
+  <p class="lead"><code>useContext-Step-by-Step-code/</code> 把同一个「用户问候」例子拆成 4 步：先用 props 逐层传 → 换 Context → 共享对象 → 抽出 Provider 与自定义 Hook。
+  每一步都能单独在浏览器里打开（每个 <code>.js</code> 都有一个同名的 <code>.html</code>）。</p>
+
+  <h3>01 · prop drilling 版本</h3>
+  <script type="text/plain" data-code data-lang="jsx" data-cap="01-prop-drilling.js">
+const { useState } = React;
+
+function App() {
+  // state 住在最顶层
+  const [user, setUser] = useState('Linus');
+
+  return (
+    <>
+      <label>
+        Name
+        <input type="text" value={user} onChange={(e) => setUser(e.target.value)} />
+      </label>
+      <h2 style={{ marginTop: '14px' }}>Hello {user}!</h2>
+      {/* user 要手工传给中间层 */}
+      <Component2 user={user} />
+    </>
+  );
+}
+
+// Component2 自己不用 user，只是为了往下传
+function Component2({ user }) {
+  return (
+    <div className="panel">
+      <h2>Component 2</h2>
+      <p className="muted">I receive user only to pass it down.</p>
+      <Component3 user={user} />
+    </div>
+  );
+}
+
+// 真正需要 user 的是最底层的 Component3
+function Component3({ user }) {
+  return (
+    <div className="panel">
+      <h2>Component 3</h2>
+      <p>Hello {user} again!</p>
+    </div>
+  );
+}
+
+const root = ReactDOM.createRoot(document.getElementById('root'));
+root.render(<App />);
+  </script>
+
+  <h3>02 · 用 Context 取代逐层传</h3>
+  <script type="text/plain" data-code data-lang="jsx" data-cap="02-create-and-use-context.js">
+const { useState, createContext, useContext } = React;
+
+// 1. 创建 context（null 是默认值）
+const UserContext = createContext(null);
+
+function App() {
+  const [user, setUser] = useState('Linus');
+
+  // 2. 用 Provider 把值提供给里面的一切
+  return (
+    <UserContext.Provider value={user}>
+      <label>
+        Name
+        <input type="text" value={user} onChange={(e) => setUser(e.target.value)} />
+      </label>
+      <h2 style={{ marginTop: '14px' }}>Hello {user}!</h2>
+      <Component2 />
+    </UserContext.Provider>
+  );
+}
+
+// 不再有任何 props：Component2 完全不知道 user 的存在
+function Component2() {
+  return (
+    <div className="panel">
+      <h2>Component 2</h2>
+      <p className="muted">No props needed here.</p>
+      <Component3 />
+    </div>
+  );
+}
+
+function Component3() {
+  // 3. 不管嵌套多深，直接读
+  const user = useContext(UserContext);
+
+  return (
+    <div className="panel">
+      <h2>Component 3</h2>
+      <p>Hello {user} again!</p>
+    </div>
+  );
+}
+
+const root = ReactDOM.createRoot(document.getElementById('root'));
+root.render(<App />);
+  </script>
+
+  <h3>03 · 共享「值 + 修改方法」</h3>
+  <script type="text/plain" data-code data-lang="jsx" data-cap="03-theme-toggle.js：value 传对象，就能顺带把 setter 发下去">
+const { useState, createContext, useContext } = React;
+
+const ThemeContext = createContext(null);
+
+function App() {
+  const [theme, setTheme] = useState('light');
+
+  const toggleTheme = () => {
+    setTheme((t) => (t === 'light' ? 'dark' : 'light'));
+  };
+
+  // 同时提供「当前主题」和「切换主题的方法」
+  return (
+    <ThemeContext.Provider value={{ theme, toggleTheme }}>
+      <Page />
+    </ThemeContext.Provider>
+  );
+}
+
+// Page 既不读也不用 theme，却依然是它的祖先
+function Page() {
+  return (
+    <>
+      <Toolbar />
+      <Article />
+    </>
+  );
+}
+
+function Toolbar() {
+  // 解构拿到两样东西
+  const { theme, toggleTheme } = useContext(ThemeContext);
+
+  return (
+    <div className="row">
+      <button onClick={toggleTheme}>
+        Switch to {theme === 'light' ? 'dark' : 'light'} theme
+      </button>
+      <span className="muted">Current theme: {theme}</span>
+    </div>
+  );
+}
+
+function Article() {
+  // 兄弟组件同样能读，父级 Page 一点都没参与
+  const { theme } = useContext(ThemeContext);
+
+  return (
+    <div className={theme === 'dark' ? 'panel theme-dark' : 'panel'}>
+      <h2>A themed panel</h2>
+      <p className="muted">
+        Toolbar and Article both read the theme from context. Page, their parent, never touches it.
+      </p>
+    </div>
+  );
+}
+
+const root = ReactDOM.createRoot(document.getElementById('root'));
+root.render(<App />);
+  </script>
+
+  <h3>04 · 抽出 Provider 与自定义 Hook</h3>
+  <script type="text/plain" data-code data-lang="jsx" data-cap="04-provider-and-custom-hook.js：真实项目里的标准写法">
+const { useState, createContext, useContext } = React;
+
+const AuthContext = createContext(null);
+
+// Provider 组件：自己持有 state，并用 children 把内容包起来
+function AuthProvider({ children }) {
+  const [user, setUser] = useState(null);
+
+  const login = (name) => setUser({ name });
+  const logout = () => setUser(null);
+
+  return (
+    <AuthContext.Provider value={{ user, login, logout }}>
+      {children}
+    </AuthContext.Provider>
+  );
+}
+
+// 自定义 Hook：更短、更安全的读取方式
+function useAuth() {
+  const context = useContext(AuthContext);
+  if (context === null) {
+    // 忘了包 Provider 时，报一句看得懂的错
+    throw new Error('useAuth must be used inside an AuthProvider');
+  }
+  return context;
+}
+
+function LoginBox() {
+  const { user, login, logout } = useAuth();
+
+  return user ? (
+    <div className="row">
+      <span>Signed in as <strong>{user.name}</strong></span>
+      <button className="secondary" onClick={logout}>Log out</button>
+    </div>
+  ) : (
+    <div className="row">
+      <button onClick={() => login('Ada')}>Log in as Ada</button>
+      <button onClick={() => login('Grace')}>Log in as Grace</button>
+    </div>
+  );
+}
+
+// 兄弟组件也能用同一个 context
+function Greeting() {
+  const { user } = useAuth();
+
+  return (
+    <div className="panel">
+      <h2>{user ? `Welcome back, ${user.name}!` : 'Welcome, guest!'}</h2>
+      <p className="muted">This component is a sibling of LoginBox, not its child.</p>
+    </div>
+  );
+}
+
+function App() {
+  return (
+    <AuthProvider>
+      <LoginBox />
+      <Greeting />
+    </AuthProvider>
+  );
+}
+
+const root = ReactDOM.createRoot(document.getElementById('root'));
+root.render(<App />);
+  </script>
+
+  <h3>练习答案 · 中英/西语切换</h3>
+  <details class="sol">
+    <summary>📘 exercise/solution/app.js（LanguageProvider + useLanguage）</summary>
+    <script type="text/plain" data-code data-lang="jsx">
+// 练习：English / Español（答案）
+const { useState, createContext, useContext } = React;
+
+// 两张翻译表：键名相同，语言不同
+const translations = {
+  en: { hello: 'Hello', welcome: 'Welcome to React hooks', goodbye: 'Goodbye', button: 'Español' },
+  es: { hello: 'Hola', welcome: 'Bienvenido a los hooks de React', goodbye: 'Adiós', button: 'English' },
+};
+
+// 1. 创建 context
+const LanguageContext = createContext(null);
+
+// 2. Provider 持有当前语言，并共享对应的词条
+function LanguageProvider({ children }) {
+  const [language, setLanguage] = useState('en');
+
+  const toggleLanguage = () => {
+    setLanguage((lang) => (lang === 'en' ? 'es' : 'en'));
+  };
+
+  return (
+    <LanguageContext.Provider value={{ language, text: translations[language], toggleLanguage }}>
+      {children}
+    </LanguageContext.Provider>
+  );
+}
+
+// 3. 自定义 Hook：带错误校验
+function useLanguage() {
+  const context = useContext(LanguageContext);
+  if (context === null) {
+    throw new Error('useLanguage must be used inside a LanguageProvider');
+  }
+  return context;
+}
+
+// 4. 切换按钮
+function LanguageSwitcher() {
+  const { text, toggleLanguage } = useLanguage();
+  return <button onClick={toggleLanguage}>{text.button}</button>;
+}
+
+// 5. 问候语
+function Greeting() {
+  const { text } = useLanguage();
+  return (
+    <div className="panel">
+      <h2>{text.hello}!</h2>
+      <p>{text.welcome}</p>
+      <p className="muted">{text.goodbye}</p>
+    </div>
+  );
+}
+
+// 6. 用 Provider 包住两个组件
+function App() {
+  return (
+    <LanguageProvider>
+      <LanguageSwitcher />
+      <Greeting />
+    </LanguageProvider>
+  );
+}
+
+const root = ReactDOM.createRoot(document.getElementById('root'));
+root.render(<App />);
+    </script>
+  </details>
+
+  <div class="callout key">
+    <div class="callout-h">🔑 四步各自解决的问题</div>
+    <div class="callout-b">01 展示问题（中间层被迫转发）→ 02 用 Context 消除转发 → 03 用对象 value 同时共享「数据和改数据的方法」→
+    04 用 Provider + 自定义 Hook 把样板代码收起来，并加上「忘记包 Provider」的报错。</div>
+  </div>
+
+  <div class="done-row"><label class="done-label"><input type="checkbox" class="done-check" data-key="contextsbs"><span>标记「useContext 分步」已完成</span></label></div>
+</section>
+
 <section class="card" id="usememo">
   <h2><span class="sec-num">6</span>useMemo：缓存计算结果</h2>
   <p class="lead">用 <code>useMemo</code> 可以避免一次昂贵的计算在<b>无关的重渲染</b>中被反复执行。</p>
@@ -1978,6 +2615,213 @@ export default ScorePanel;
   </div>
 
   <div class="done-row"><label class="done-label"><input type="checkbox" class="done-check" data-key="usememo"><span>标记「useMemo」已完成</span></label></div>
+</section>
+
+<section class="card" id="memosbs">
+  <h2><span class="sec-num sm">6.1</span>useMemo 分步教程代码</h2>
+  <p class="lead"><code>useMemo-Step-by-Step/</code> 用两个「故意变慢」的例子证明 useMemo 的价值：一个装忙 300 毫秒的翻倍函数，一个真正很贵的质数筛选。</p>
+
+  <h3>01 · 没有 useMemo vs 有 useMemo</h3>
+  <script type="text/plain" data-code data-lang="jsx" data-cap="01-expensive-calculation.js（左右两个面板，同一份计算）">
+const { useState, useMemo } = React;
+
+// 假装很贵：让 CPU 空转约 300 毫秒
+function slowDouble(num) {
+  const start = performance.now();
+  while (performance.now() - start < 300) {
+    // 故意空转
+  }
+  return num * 2;
+}
+
+// 上半块：不用 useMemo
+function WithoutMemo() {
+  const [count, setCount] = useState(0);
+  const [other, setOther] = useState(0);
+
+  console.log('WithoutMemo: calculating…');
+  const doubled = slowDouble(count);          // 每次渲染都跑，点 other 也白等 300ms
+
+  return (
+    <div className="panel">
+      <h2>Without useMemo</h2>
+      <p>count {count} · doubled <strong>{doubled}</strong> · other {other}</p>
+      <div className="row">
+        <button onClick={() => setCount((c) => c + 1)}>count + 1</button>
+        <button className="secondary" onClick={() => setOther((o) => o + 1)}>other + 1</button>
+      </div>
+    </div>
+  );
+}
+
+// 下半块：用 useMemo 包起来
+function WithMemo() {
+  const [count, setCount] = useState(0);
+  const [other, setOther] = useState(0);
+
+  const doubled = useMemo(() => {
+    console.log('WithMemo: calculating…');
+    return slowDouble(count);                 // 只有 count 变了才跑
+  }, [count]);
+
+  return (
+    <div className="panel">
+      <h2>With useMemo</h2>
+      <p>count {count} · doubled <strong>{doubled}</strong> · other {other}</p>
+      <div className="row">
+        <button onClick={() => setCount((c) => c + 1)}>count + 1</button>
+        <button className="secondary" onClick={() => setOther((o) => o + 1)}>other + 1</button>
+      </div>
+    </div>
+  );
+}
+
+function App() {
+  return (
+    <>
+      <WithoutMemo />
+      <WithMemo />
+      <p className="muted">Click "other + 1" in each panel. One feels slow, one is instant. Check the Console.</p>
+    </>
+  );
+}
+
+const root = ReactDOM.createRoot(document.getElementById('root'));
+root.render(<App />);
+  </script>
+  <p>在两个面板里各点一次 <b>other + 1</b>：上半块卡 300 毫秒，下半块瞬间响应。Console 里的日志也说明了同样的差别。</p>
+
+  <h3>02 · 真正昂贵的计算：找质数</h3>
+  <script type="text/plain" data-code data-lang="jsx" data-cap="02-find-primes.js">
+const { useState, useMemo } = React;
+
+// 试除 2..√n：上限越大越贵
+function findPrimes(limit) {
+  const primes = [];
+  for (let n = 2; n <= limit; n++) {
+    let isPrime = true;
+    for (let d = 2; d * d <= n; d++) {
+      if (n % d === 0) {
+        isPrime = false;
+        break;
+      }
+    }
+    if (isPrime) primes.push(n);
+  }
+  return primes;
+}
+
+function App() {
+  const [limit, setLimit] = useState(100000);
+  const [dark, setDark] = useState(false);   // 与计算无关的 state
+
+  // 只有 limit 变化才重算；切换深浅色不会触发
+  const primes = useMemo(() => {
+    console.log(`Finding primes up to ${limit}…`);
+    return findPrimes(limit);
+  }, [limit]);
+
+  return (
+    <div className={dark ? 'panel theme-dark' : 'panel'}>
+      <div className="row">
+        <label>
+          Find primes up to
+          <select value={limit} onChange={(e) => setLimit(Number(e.target.value))}>
+            <option value={1000}>1,000</option>
+            <option value={100000}>100,000</option>
+            <option value={2000000}>2,000,000</option>
+          </select>
+        </label>
+        <button className="secondary" onClick={() => setDark((d) => !d)}>
+          {dark ? 'Light' : 'Dark'} panel
+        </button>
+      </div>
+      <p className="big">{primes.length.toLocaleString()} primes</p>
+      <p className="muted">The largest is {primes[primes.length - 1].toLocaleString()}.</p>
+    </div>
+  );
+}
+
+const root = ReactDOM.createRoot(document.getElementById('root'));
+root.render(<App />);
+  </script>
+  <div class="callout warn">
+    <div class="callout-h">⚠️ 这个例子的隐藏考点</div>
+    <div class="callout-b">依赖数组里只有 <code>limit</code>，没有 <code>dark</code> —— 依赖数组应该列出「计算里真正用到的值」，
+    用不到的写了也不会重算，但会让人误以为它参与了计算。</div>
+  </div>
+
+  <h3>练习答案 · 学生成绩榜</h3>
+  <details class="sol">
+    <summary>📘 exercise/solution/app.js（搜索 + 及格筛选 + 降序，全部 memo 化）</summary>
+    <script type="text/plain" data-code data-lang="jsx">
+// 练习：学生成绩榜（答案）
+const { useState, useMemo } = React;
+
+const students = [
+  { id: 1, name: 'Linus', score: 72 },
+  { id: 2, name: 'Ada', score: 95 },
+  { id: 3, name: 'Grace', score: 58 },
+  { id: 4, name: 'Alan', score: 83 },
+  { id: 5, name: 'Margaret', score: 91 },
+  { id: 6, name: 'Tim', score: 47 },
+  { id: 7, name: 'Barbara', score: 66 },
+  { id: 8, name: 'Dennis', score: 79 },
+];
+
+function App() {
+  const [search, setSearch] = useState('');
+  const [passingOnly, setPassingOnly] = useState(false);
+  const [clicks, setClicks] = useState(0);   // 无关 state，用来验证 memo
+
+  const visibleStudents = useMemo(() => {
+    console.log('Ranking students…');
+    const text = search.toLowerCase();
+    return students
+      .filter((s) => s.name.toLowerCase().includes(text))
+      .filter((s) => (passingOnly ? s.score >= 60 : true))
+      .sort((a, b) => b.score - a.score);    // filter() 已经返回新数组，排序不会动原数据
+  }, [search, passingOnly]);                  // students 是常量，不必写进依赖
+
+  return (
+    <>
+      <div className="row">
+        <input
+          type="search"
+          placeholder="Search by name…"
+          value={search}
+          onChange={(e) => setSearch(e.target.value)}
+        />
+        <label>
+          <input
+            type="checkbox"
+            checked={passingOnly}
+            onChange={(e) => setPassingOnly(e.target.checked)}
+          />
+          Passing only
+        </label>
+        <button className="secondary" onClick={() => setClicks((c) => c + 1)}>
+          Unrelated clicks: {clicks}
+        </button>
+      </div>
+
+      <ul className="list">
+        {visibleStudents.map((s, i) => (
+          <li key={s.id}>
+            {i + 1}. {s.name} · {s.score} {s.score >= 60 && <span className="tag">pass</span>}
+          </li>
+        ))}
+      </ul>
+    </>
+  );
+}
+
+const root = ReactDOM.createRoot(document.getElementById('root'));
+root.render(<App />);
+    </script>
+  </details>
+
+  <div class="done-row"><label class="done-label"><input type="checkbox" class="done-check" data-key="memosbs"><span>标记「useMemo 分步」已完成</span></label></div>
 </section>
 
 <section class="card" id="useref">
@@ -2361,6 +3205,916 @@ export default ImageGallery;
   <div class="done-row"><label class="done-label"><input type="checkbox" class="done-check" data-key="useref"><span>标记「useRef」已完成</span></label></div>
 </section>
 
+<section class="card" id="refsbs">
+  <h2><span class="sec-num sm">7.1</span>useRef 分步教程代码</h2>
+  <p class="lead"><code>useRef-Step-by-Step/</code> 覆盖 useRef 的五个典型场景：聚焦 DOM、ref 与 state 对比、秒表（存 timer id）、记录上一次的值、forwardRef，外加一个色带练习。</p>
+
+  <h3>01 · 聚焦输入框</h3>
+  <script type="text/plain" data-code data-lang="jsx" data-cap="01-focus-input.js">
+const { useRef, useEffect } = React;
+
+function App() {
+  // 1. 创建 ref，React 会把 <input> 元素塞进 inputRef.current
+  const inputRef = useRef(null);
+
+  // 页面渲染完立刻把光标放进去（只跑一次）
+  useEffect(() => {
+    inputRef.current.focus();
+  }, []);
+
+  const handleFocus = () => {
+    inputRef.current.focus();
+  };
+
+  const handleSelect = () => {
+    inputRef.current.select();
+  };
+
+  return (
+    <>
+      {/* 2. 用 ref 属性把 ref 绑到元素上 */}
+      <input ref={inputRef} type="text" defaultValue="Hello, refs!" />
+
+      <div className="row">
+        <button onClick={handleFocus}>Focus the box</button>
+        <button className="secondary" onClick={handleSelect}>Select all the text</button>
+      </div>
+      <p className="muted">Click somewhere else on the page first, then try the buttons.</p>
+    </>
+  );
+}
+
+const root = ReactDOM.createRoot(document.getElementById('root'));
+root.render(<App />);
+  </script>
+
+  <h3>02 · ref 与 state 并排看</h3>
+  <script type="text/plain" data-code data-lang="jsx" data-cap="02-ref-vs-state.js">
+const { useState, useRef } = React;
+
+function App() {
+  const [stateCount, setStateCount] = useState(0);
+  const refCount = useRef(0);
+
+  console.log('App rendered');
+
+  const addToState = () => {
+    setStateCount((c) => c + 1);          // 会触发重渲染
+  };
+
+  const addToRef = () => {
+    refCount.current = refCount.current + 1;   // 不会触发重渲染
+    console.log('refCount.current is now', refCount.current);
+  };
+
+  return (
+    <div className="grid-2">
+      <div className="panel">
+        <h2>useState</h2>
+        <p className="big">{stateCount}</p>
+        <button onClick={addToState}>State + 1</button>
+        <p className="muted">Changing it re-renders the component.</p>
+      </div>
+      <div className="panel">
+        <h2>useRef</h2>
+        <p className="big">{refCount.current}</p>
+        <button className="secondary" onClick={addToRef}>Ref + 1</button>
+        <p className="muted">Changing it does not re-render. The number only catches up on the next render.</p>
+      </div>
+    </div>
+  );
+}
+
+const root = ReactDOM.createRoot(document.getElementById('root'));
+root.render(<App />);
+  </script>
+  <p>先点几下 <b>Ref + 1</b>（数字不动，Console 有日志），再点 <b>State + 1</b>：重渲染把 ref 的最新值一起显示出来。</p>
+
+  <h3>03 · 秒表：timer id 放 ref 里</h3>
+  <script type="text/plain" data-code data-lang="jsx" data-cap="03-stopwatch.js">
+const { useState, useRef } = React;
+
+function App() {
+  const [tenths, setTenths] = useState(0);      // 十分之一秒，界面要显示
+  const [running, setRunning] = useState(false);
+
+  // interval id 之后要用到（停止/重置），但不用显示：正适合 ref
+  const intervalRef = useRef(null);
+
+  const start = () => {
+    if (running) return;
+    setRunning(true);
+    intervalRef.current = setInterval(() => {
+      setTenths((t) => t + 1);
+    }, 100);
+  };
+
+  const stop = () => {
+    clearInterval(intervalRef.current);
+    setRunning(false);
+  };
+
+  const reset = () => {
+    clearInterval(intervalRef.current);
+    setRunning(false);
+    setTenths(0);
+  };
+
+  return (
+    <>
+      <p className="big">{(tenths / 10).toFixed(1)} s</p>
+      <div className="row">
+        <button onClick={start} disabled={running}>Start</button>
+        <button onClick={stop} disabled={!running}>Stop</button>
+        <button className="secondary" onClick={reset}>Reset</button>
+      </div>
+    </>
+  );
+}
+
+const root = ReactDOM.createRoot(document.getElementById('root'));
+root.render(<App />);
+  </script>
+
+  <h3>04 · 记住上一次输入的值</h3>
+  <script type="text/plain" data-code data-lang="jsx" data-cap="04-previous-value.js">
+const { useState, useRef, useEffect } = React;
+
+function App() {
+  const [text, setText] = useState('');
+  const previousText = useRef('');
+
+  // 每次渲染后执行：把「这次的值」存起来，留给下一次渲染
+  useEffect(() => {
+    previousText.current = text;
+  }, [text]);
+
+  return (
+    <>
+      <input
+        type="text"
+        value={text}
+        onChange={(e) => setText(e.target.value)}
+        placeholder="Type something…"
+      />
+      <ul className="list">
+        <li>Current: <strong>{text || '(empty)'}</strong></li>
+        <li>Previous: <strong>{previousText.current || '(empty)'}</strong></li>
+      </ul>
+    </>
+  );
+}
+
+const root = ReactDOM.createRoot(document.getElementById('root'));
+root.render(<App />);
+  </script>
+  <div class="callout tip">
+    <div class="callout-h">💡 注意显示时机</div>
+    <div class="callout-b">effect 在渲染<b>之后</b>跑，所以界面上看到的 Previous 是「上一次渲染的值」，和 useMemo / useRef 教程里
+    「ref 的值晚一拍才显示」是同一个道理。</div>
+  </div>
+
+  <h3>05 · forwardRef：把 ref 传进子组件</h3>
+  <script type="text/plain" data-code data-lang="jsx" data-cap="05-forward-ref.js">
+const { useRef, forwardRef } = React;
+
+// 可复用输入框。forwardRef 让父组件的 ref 直达内部的 <input>
+const FancyInput = forwardRef((props, ref) => {
+  return (
+    <label>
+      {props.label}
+      <input ref={ref} type="text" placeholder={props.placeholder} />
+    </label>
+  );
+});
+
+function App() {
+  const emailRef = useRef(null);
+
+  return (
+    <>
+      <FancyInput ref={emailRef} label="Email" placeholder="you@example.com" />
+      <div className="row">
+        <button onClick={() => emailRef.current.focus()}>Focus the email box</button>
+      </div>
+      <p className="muted">Without forwardRef, ref on a component of your own would not reach the input.</p>
+    </>
+  );
+}
+
+const root = ReactDOM.createRoot(document.getElementById('root'));
+root.render(<App />);
+  </script>
+
+  <h3>练习答案 · 色带（一组 DOM ref + 平滑滚动）</h3>
+  <details class="sol">
+    <summary>📘 exercise/solution/app.js（数组 ref + 回调 ref）</summary>
+    <script type="text/plain" data-code data-lang="jsx">
+// 练习：色带（答案）
+const { useState, useRef } = React;
+
+const colors = ['#e4572e', '#f3a712', '#a8c686', '#29335c', '#669bbc', '#9b5de5', '#00a6a6', '#f15bb5'];
+
+function App() {
+  const [current, setCurrent] = useState(0);
+
+  // 1. 一个 ref 装下所有色块 DOM 元素
+  const tiles = useRef([]);
+
+  // 2. 切换色块：取模实现循环，并平滑滚动到视野中央
+  const goTo = (index) => {
+    const next = (index + colors.length) % colors.length;
+    setCurrent(next);
+    tiles.current[next].scrollIntoView({ behavior: 'smooth', inline: 'center', block: 'nearest' });
+  };
+
+  return (
+    <>
+      <div className="row">
+        <button onClick={() => goTo(current - 1)}>← Previous</button>
+        <button onClick={() => goTo(current + 1)}>Next →</button>
+        <span className="muted">Tile {current + 1} of {colors.length}</span>
+      </div>
+
+      <div style={{ display: 'flex', gap: '12px', overflowX: 'auto', padding: '8px 2px' }}>
+        {colors.map((color, i) => (
+          <div
+            key={color}
+            // 3. 回调 ref：React 会用元素调用它，我们把它存进数组
+            ref={(el) => (tiles.current[i] = el)}
+            style={{
+              flex: '0 0 180px',
+              height: '120px',
+              borderRadius: '10px',
+              background: color,
+              outline: i === current ? '4px solid #1f2733' : 'none',
+              outlineOffset: '3px',
+            }}
+          />
+        ))}
+      </div>
+    </>
+  );
+}
+
+const root = ReactDOM.createRoot(document.getElementById('root'));
+root.render(<App />);
+    </script>
+  </details>
+
+  <div class="done-row"><label class="done-label"><input type="checkbox" class="done-check" data-key="refsbs"><span>标记「useRef 分步」已完成</span></label></div>
+</section>
+
+<section class="card" id="transitionsbs">
+  <h2><span class="sec-num sm">7.2</span>useTransition 分步教程代码</h2>
+  <p class="lead"><code>useTransition-Step-by-Step-code/</code> 介绍 React 18 的 <code>useTransition</code>：
+  把「不着急的更新」标记出来，让输入框、按钮这类交互保持流畅。两个演示 + 一个练习，都配合 <code>memo</code> 使用。</p>
+
+  <div class="callout key">
+    <div class="callout-h">🔑 用法骨架</div>
+    <div class="callout-b"><code>const [isPending, startTransition] = useTransition();</code> ——
+    把慢更新包进 <code>startTransition(() =&gt; setX(...))</code>，React 会先处理紧急更新（输入框），
+    空闲时再处理过渡更新，并在过渡进行时把 <code>isPending</code> 置为 <code>true</code>（适合显示「更新中」）。</div>
+  </div>
+
+  <h3>01 · 慢速搜索</h3>
+  <script type="text/plain" data-code data-lang="jsx" data-cap="01-slow-search.js">
+const { useState, useTransition, memo } = React;
+
+const FRUITS = ['apple', 'banana', 'cherry', 'date', 'elderberry', 'fig', 'grape', 'kiwi',
+  'lemon', 'mango', 'nectarine', 'orange', 'papaya', 'pear', 'plum', 'raspberry'];
+const items = Array.from({ length: 250 }, (_, i) => `${FRUITS[i % FRUITS.length]} ${i + 1}`);
+
+// 空转几毫秒，模拟真实的渲染开销
+function busyFor(ms) {
+  const start = performance.now();
+  while (performance.now() - start < ms) {
+    // 故意什么都不做
+  }
+}
+
+// 每一行都慢：250 行大约要四分之一秒
+function SlowItem({ text }) {
+  busyFor(1);
+  return <li>{text}</li>;
+}
+
+// memo：props 没变就跳过整个列表的重渲染
+const SlowList = memo(function SlowList({ query }) {
+  const visible = items.filter((item) => item.includes(query.toLowerCase()));
+  return (
+    <ul className="list">
+      {visible.map((item) => <SlowItem key={item} text={item} />)}
+    </ul>
+  );
+});
+
+function App() {
+  const [query, setQuery] = useState('');           // 输入框内容：紧急
+  const [listQuery, setListQuery] = useState('');   // 列表筛选：可以等
+  const [transitionOn, setTransitionOn] = useState(true);
+  const [isPending, startTransition] = useTransition();
+
+  const handleChange = (e) => {
+    const value = e.target.value;
+    setQuery(value);                     // 永远紧急：先让输入框响应
+    if (transitionOn) {
+      startTransition(() => {
+        setListQuery(value);             // 标记为「不紧急」
+      });
+    } else {
+      setListQuery(value);               // 也当紧急：输入框会被列表拖慢
+    }
+  };
+
+  return (
+    <>
+      <div className="row">
+        <input type="search" value={query} onChange={handleChange} placeholder="Type a fruit…" />
+        <label>
+          <input
+            type="checkbox"
+            checked={transitionOn}
+            onChange={(e) => setTransitionOn(e.target.checked)}
+          />
+          use startTransition
+        </label>
+      </div>
+
+      {isPending && <p className="status pending">Updating the list…</p>}
+      <div style={{ opacity: isPending ? 0.5 : 1 }}>
+        <SlowList query={listQuery} />
+      </div>
+    </>
+  );
+}
+
+const root = ReactDOM.createRoot(document.getElementById('root'));
+root.render(<App />);
+  </script>
+  <p>取消勾选 <b>use startTransition</b> 再打字，就能感觉到卡顿；勾上之后输入立刻响应，列表在后台追赶。</p>
+
+  <h3>02 · 慢速标签页</h3>
+  <script type="text/plain" data-code data-lang="jsx" data-cap="02-slow-tab.js">
+const { useState, useTransition, memo } = React;
+
+function busyFor(ms) {
+  const start = performance.now();
+  while (performance.now() - start < ms) {
+    // 什么都不做
+  }
+}
+
+function SlowPost({ index }) {
+  busyFor(1.5);
+  return <li>Post #{index + 1}</li>;
+}
+
+// 300 条慢帖子：大约半秒渲染
+const PostsTab = memo(function PostsTab() {
+  const posts = [];
+  for (let i = 0; i < 300; i++) {
+    posts.push(<SlowPost key={i} index={i} />);
+  }
+  return <ul className="list">{posts}</ul>;
+});
+
+function AboutTab() {
+  return <p>Welcome! This tab renders instantly.</p>;
+}
+
+function ContactTab() {
+  return <p>You can reach us at hello@example.com. This tab renders instantly too.</p>;
+}
+
+function App() {
+  const [tab, setTab] = useState('about');
+  const [transitionOn, setTransitionOn] = useState(true);
+  const [isPending, startTransition] = useTransition();
+
+  const selectTab = (next) => {
+    if (transitionOn) {
+      startTransition(() => setTab(next));   // 切慢标签页当作过渡
+    } else {
+      setTab(next);
+    }
+  };
+
+  const tabs = [['about', 'About'], ['posts', 'Posts (slow)'], ['contact', 'Contact']];
+
+  return (
+    <>
+      <div className="row">
+        {tabs.map(([id, label]) => (
+          <button key={id} className={tab === id ? '' : 'secondary'} onClick={() => selectTab(id)}>
+            {label}
+          </button>
+        ))}
+        <label>
+          <input
+            type="checkbox"
+            checked={transitionOn}
+            onChange={(e) => setTransitionOn(e.target.checked)}
+          />
+          use startTransition
+        </label>
+      </div>
+
+      {isPending && <p className="status pending">Loading the tab…</p>}
+      <div className="panel" style={{ opacity: isPending ? 0.5 : 1 }}>
+        {tab === 'about' && <AboutTab />}
+        {tab === 'posts' && <PostsTab />}
+        {tab === 'contact' && <ContactTab />}
+      </div>
+    </>
+  );
+}
+
+const root = ReactDOM.createRoot(document.getElementById('root'));
+root.render(<App />);
+  </script>
+
+  <h3>练习答案 · 顺滑的色相滑块</h3>
+  <details class="sol">
+    <summary>📘 exercise/solution/app.js（把 hue 拆成「紧急 / 可等」两份 state）</summary>
+    <script type="text/plain" data-code data-lang="jsx">
+// 练习：顺滑的色相滑块（答案）
+const { useState, useTransition, memo } = React;
+
+function busyFor(ms) {
+  const start = performance.now();
+  while (performance.now() - start < ms) {
+    // 什么都不做
+  }
+}
+
+function Swatch({ hue, i }) {
+  busyFor(0.6);
+  const lightness = 35 + (i % 10) * 5;
+  return <div style={{ height: '28px', borderRadius: '4px', background: `hsl(${hue} 70% ${lightness}%)` }} />;
+}
+
+// 400 个慢色块：重画一次约四分之一秒
+const SlowGrid = memo(function SlowGrid({ hue }) {
+  const swatches = [];
+  for (let i = 0; i < 400; i++) {
+    swatches.push(<Swatch key={i} i={i} hue={hue} />);
+  }
+  return (
+    <div style={{ display: 'grid', gridTemplateColumns: 'repeat(20, 1fr)', gap: '4px', marginTop: '12px' }}>
+      {swatches}
+    </div>
+  );
+});
+
+function App() {
+  // 1. 两份 state：滑块要即时，网格可以等
+  const [sliderHue, setSliderHue] = useState(200);
+  const [gridHue, setGridHue] = useState(200);
+
+  // 2. 过渡
+  const [isPending, startTransition] = useTransition();
+
+  const handleChange = (e) => {
+    const value = Number(e.target.value);
+    setSliderHue(value);                 // 滑块立刻动
+    startTransition(() => {
+      setGridHue(value);                 // 网格有空再追
+    });
+  };
+
+  return (
+    <>
+      <label>
+        Hue {sliderHue}
+        <input type="range" min="0" max="360" value={sliderHue} onChange={handleChange} />
+      </label>
+
+      {/* 3. 过渡期间给出反馈 */}
+      {isPending && <p className="status pending">Repainting…</p>}
+      <SlowGrid hue={gridHue} />
+    </>
+  );
+}
+
+const root = ReactDOM.createRoot(document.getElementById('root'));
+root.render(<App />);
+    </script>
+  </details>
+
+  <div class="callout warn">
+    <div class="callout-h">⚠️ 别滥用</div>
+    <div class="callout-b"><code>useTransition</code> 不是加速器，它只是重新排优先级：紧急更新仍然要等该等的活干完。
+    它解决的是「输入被大列表卡住」这类体验问题，不能替代 <code>useMemo</code> 或虚拟列表。</div>
+  </div>
+
+  <div class="done-row"><label class="done-label"><input type="checkbox" class="done-check" data-key="transitionsbs"><span>标记「useTransition 分步」已完成</span></label></div>
+</section>
+
+<section class="card" id="movienight">
+  <h2><span class="sec-num">10</span>综合项目：Movie Night Part 3</h2>
+  <p class="lead"><code>Movie-Night-Part-3-Hooks-Tutorial/</code> 用同一个「观影清单」应用，从 Part 2 的成果出发，
+  一步一步把本模块的 Hook 全部用上。每个 <code>checkpoints/step-XX/</code> 都是一个可直接运行的完整版本，下面按步骤给出<b>新增/改动的代码</b>（均已加中文注释）。</p>
+
+  <h3>项目骨架</h3>
+  <p>组件树：<code>App</code>（持有全部 state）→ <code>Header</code> / <code>AddMovieForm</code> / <code>Countdown</code> / <code>Toolbar</code> / <code>Movie</code> / <code>Footer</code>，
+  其中 <code>Movie</code> 内部还有 <code>MovieDetails</code> 与 <code>Rating</code>。数据来自 <code>movies.json</code>，样式在 <code>app.css</code>。</p>
+
+  <h3>Step 01 · 受控表单新增电影（useState）</h3>
+  <script type="text/plain" data-code data-lang="jsx" data-cap="step-01-add-movie-form/app.js：新增的 AddMovieForm">
+const AddMovieForm = (props) => {
+  // 三个受控字段：标题、年份、类型
+  const [title, setTitle] = useState('');
+  const [year, setYear] = useState('');
+  const [genre, setGenre] = useState('Drama');
+
+  const handleSubmit = (e) => {
+    e.preventDefault();                      // 阻止表单提交刷新页面
+    if (title.trim() === '') {
+      return;                                // 空标题直接忽略
+    }
+    props.onAdd({
+      title: title.trim(),
+      year: Number(year) || new Date().getFullYear(),  // 没填年份就用今年
+      genre: genre
+    });
+    setTitle('');                            // 提交后清空输入框
+    setYear('');
+  };
+
+  return (
+    <form className="add-movie" onSubmit={handleSubmit}>
+      <input
+        type="text"
+        placeholder="Movie title"
+        value={title}
+        onChange={(e) => setTitle(e.target.value)}
+      />
+      <input
+        type="number"
+        placeholder="Year"
+        value={year}
+        onChange={(e) => setYear(e.target.value)}
+      />
+      <select value={genre} onChange={(e) => setGenre(e.target.value)}>
+        <option>Drama</option>
+        <option>Comedy</option>
+        <option>Animation</option>
+        <option>Sci-Fi</option>
+        <option>Horror</option>
+      </select>
+      <button type="submit">Add movie</button>
+    </form>
+  );
+};
+  </script>
+  <p>对应地，<code>App</code> 里新增 <code>handleAddMovie</code>：用展开运算符追加，并补上默认字段和 <code>id: Date.now()</code>。</p>
+
+  <h3>Step 02 · useRef 把光标送回标题框</h3>
+  <script type="text/plain" data-code data-lang="jsx" data-cap="step-02-use-ref-focus/app.js：AddMovieForm 的改动">
+const AddMovieForm = (props) => {
+  const [title, setTitle] = useState('');
+  const [year, setYear] = useState('');
+  const [genre, setGenre] = useState('Drama');
+  // 指向真实 <input> 元素
+  const titleInput = useRef(null);
+
+  const handleSubmit = (e) => {
+    e.preventDefault();
+    if (title.trim() === '') {
+      titleInput.current.focus();            // 标题为空：聚焦提示用户
+      return;
+    }
+    props.onAdd({ title: title.trim(), year: Number(year) || new Date().getFullYear(), genre: genre });
+    setTitle('');
+    setYear('');
+    titleInput.current.focus();              // 提交完继续聚焦，方便连加
+  };
+
+  return (
+    <form className="add-movie" onSubmit={handleSubmit}>
+      <input
+        ref={titleInput}                     {/* 把 ref 绑到 DOM 上 */}
+        type="text"
+        placeholder="Movie title"
+        value={title}
+        onChange={(e) => setTitle(e.target.value)}
+      />
+      {/* 年份、类型输入框不变 */}
+    </form>
+  );
+};
+  </script>
+
+  <h3>Step 03 · useEffect 同步浏览器标签标题</h3>
+  <script type="text/plain" data-code data-lang="jsx" data-cap="step-03-use-effect-title/app.js：App 里的新增部分（AddMovieForm 里也加了一个挂载即聚焦的 effect）">
+const App = (props) => {
+  const [movies, setMovies] = useState(props.initialMovies);
+
+  // 让标签标题跟着观看进度走
+  useEffect(() => {
+    document.title = `Movie Night (${watchedCount}/${movies.length} watched)`;
+  }, [watchedCount, movies.length]);        // 只在这两个值变化时更新
+
+  // …其余代码不变
+};
+
+// AddMovieForm 里新增：挂载时自动聚焦
+useEffect(() => {
+  titleInput.current.focus();
+}, []);
+  </script>
+
+  <h3>Step 04 · useEffect 拉取电影数据</h3>
+  <script type="text/plain" data-code data-lang="jsx" data-cap="step-04-fetch-movies/app.js：加载 / 加载中 / 出错三态">
+const wait = (ms) => new Promise(resolve => setTimeout(resolve, ms));   // 故意放慢，好看清 loading
+
+const App = () => {
+  const [movies, setMovies] = useState([]);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState(null);
+
+  // 挂载时加载一次
+  useEffect(() => {
+    const loadMovies = async () => {
+      try {
+        await wait(800);
+        const response = await fetch('./movies.json');
+        if (!response.ok) {
+          throw new Error(`HTTP ${response.status}`);
+        }
+        const data = await response.json();
+        setMovies(data);
+      } catch (err) {
+        setError(`Could not load the movies (${err.message})`);
+      } finally {
+        setLoading(false);                  // 不管成功失败都结束 loading
+      }
+    };
+
+    loadMovies();
+  }, []);
+
+  // 渲染时区分三种状态
+  // {loading && <p className="status">Loading movies…</p>}
+  // {error && <p className="status status-error">{error}</p>}
+  // {!loading && !error && movies.length === 0 && <p className="empty">No movies to show.</p>}
+  // …
+};
+  </script>
+  <div class="callout tip">
+    <div class="callout-h">💡 这一步的固定套路</div>
+    <div class="callout-b">请求函数定义为 <code>async</code> → <code>try/catch/finally</code> 三态 → effect 只调用它 → 空依赖数组保证只跑一次。
+    真实项目里还应加一个 <code>cancelled</code> 标志防止竞态。</div>
+  </div>
+
+  <h3>Step 05 · 倒计时与清理函数</h3>
+  <script type="text/plain" data-code data-lang="jsx" data-cap="step-05-countdown-cleanup/app.js：新增的 Countdown 组件">
+// mm:ss，例如 14:59
+const formatTime = (totalSeconds) => {
+  const minutes = Math.floor(totalSeconds / 60);
+  const seconds = totalSeconds % 60;
+  return `${String(minutes).padStart(2, '0')}:${String(seconds).padStart(2, '0')}`;
+};
+
+const Countdown = (props) => {
+  const [secondsLeft, setSecondsLeft] = useState(props.startSeconds);
+
+  useEffect(() => {
+    const intervalId = setInterval(() => {
+      setSecondsLeft(prevSeconds => Math.max(prevSeconds - 1, 0));
+    }, 1000);
+
+    // 清理：组件被移除时 React 会调用它
+    return () => {
+      clearInterval(intervalId);
+      console.log('Countdown stopped');
+    };
+  }, []);
+
+  return (
+    <p className="countdown">
+      { secondsLeft > 0
+          ? <>Movie night starts in <strong>{ formatTime(secondsLeft) }</strong></>
+          : <strong>Showtime!</strong> }
+    </p>
+  );
+};
+  </script>
+  <p>Footer 里加了「Hide countdown」按钮，控制 <code>showCountdown</code>；一旦隐藏，清理函数就会跑，定时器不会泄漏。</p>
+
+  <h3>Step 06 · useRef 统计渲染次数</h3>
+  <script type="text/plain" data-code data-lang="jsx" data-cap="step-06-use-ref-render-count/app.js：App 里的新增部分">
+const App = () => {
+  // …其它 state
+  const renderCount = useRef(0);
+
+  // 每次渲染后自增；改 ref 不会再触发渲染，所以不会死循环
+  useEffect(() => {
+    renderCount.current = renderCount.current + 1;
+    console.log(`App has rendered ${renderCount.current} times`);
+  });
+  // …
+};
+  </script>
+
+  <h3>Step 07a · 主题用手工 props 传递（prop drilling）</h3>
+  <script type="text/plain" data-code data-lang="jsx" data-cap="step-07a-prop-drilling/app.js：theme 一路手传">
+const App = () => {
+  // …
+  const [theme, setTheme] = useState('light');
+
+  const toggleTheme = () => {
+    setTheme( prevTheme => prevTheme === 'light' ? 'dark' : 'light' );
+  };
+
+  return (
+    // theme 要传给 Header、Movie（再传给 Rating）、Footer……
+    <div className={`watchlist theme-${theme}`}>
+      <Header
+        title="Movie Night"
+        totalMovies={movies.length}
+        averageRating={averageRating}
+        theme={theme}
+        toggleTheme={toggleTheme}
+      />
+      {movies.map( movie =>
+        <Movie
+          /* …其它 props… */
+          theme={theme}                 // 中间层被迫转发
+        />
+      )}
+    </div>
+  );
+};
+  </script>
+
+  <h3>Step 07b · 改用 Context 共享主题</h3>
+  <script type="text/plain" data-code data-lang="jsx" data-cap="step-07b-use-context-theme/app.js：context + 自定义 Hook">
+const ThemeContext = createContext(null);
+
+// 自定义 Hook：任何组件都能安全地读主题
+const useTheme = () => {
+  const context = useContext(ThemeContext);
+  if (context === null) {
+    throw new Error('useTheme must be used inside a ThemeContext.Provider');
+  }
+  return context;
+};
+
+// 组件里不再接收 theme props，直接读
+const Header = (props) => {
+  const { theme, toggleTheme } = useTheme();
+  return (
+    <header>
+      <h1>{ props.title }</h1>
+      <span className="stats">Movies: { props.totalMovies }</span>
+      <span className="stats">Avg rating: { props.averageRating }</span>
+      <button className="theme-toggle" onClick={toggleTheme}>
+        { theme === 'light' ? '☾ Dark' : '☀ Light' }
+      </button>
+    </header>
+  );
+};
+
+const App = () => {
+  const [theme, setTheme] = useState('light');
+  // …其它逻辑
+
+  const toggleTheme = () => setTheme( prevTheme => prevTheme === 'light' ? 'dark' : 'light' );
+  const themeValue = { theme: theme, toggleTheme: toggleTheme };
+
+  return (
+    // 最外层包一个 Provider，里面所有组件都能读到
+    <ThemeContext.Provider value={themeValue}>
+      <div className={`watchlist theme-${theme}`}>
+        <Header title="Movie Night" /* … */ />
+        {/* Movie / Rating 里改成 const { theme } = useTheme(); */}
+      </div>
+    </ThemeContext.Provider>
+  );
+};
+  </script>
+
+  <h3>Step 08 · useMemo 缓存搜索与排序</h3>
+  <script type="text/plain" data-code data-lang="jsx" data-cap="step-08-use-memo-search-sort/app.js：Toolbar + 过滤排序">
+// 故意烧 CPU，代替真实项目里的昂贵计算
+const slowDown = (ms) => {
+  const start = performance.now();
+  while (performance.now() - start < ms) {
+    // 什么都不做
+  }
+};
+
+const Toolbar = (props) => (
+  <div className="toolbar">
+    <input
+      type="search"
+      placeholder="Search titles…"
+      value={props.query}
+      onChange={(e) => props.onQueryChange(e.target.value)}
+    />
+    <label>
+      Sort by
+      <select value={props.sortBy} onChange={(e) => props.onSortChange(e.target.value)}>
+        <option value="title">Title</option>
+        <option value="rating">Rating</option>
+        <option value="year">Newest</option>
+      </select>
+    </label>
+  </div>
+);
+
+const App = () => {
+  const [query, setQuery] = useState('');
+  const [sortBy, setSortBy] = useState('title');
+  // …其它 state
+
+  // 只有 movies / query / sortBy 变化才重新过滤排序
+  const visibleMovies = useMemo(() => {
+    console.log('Filtering and sorting the movies…');
+    slowDown(150);
+    const text = query.toLowerCase();
+    return movies
+      .filter( movie => movie.title.toLowerCase().includes(text) )
+      .sort( (a, b) =>
+        sortBy === 'rating' ? b.rating - a.rating
+        : sortBy === 'year' ? b.year - a.year
+        : a.title.localeCompare(b.title)
+      );
+  }, [movies, query, sortBy]);
+
+  // context 的 value 也用 useMemo 稳住引用，避免打扰无关的消费者
+  const themeValue = useMemo(() => ({
+    theme: theme,
+    toggleTheme: () => setTheme( prevTheme => prevTheme === 'light' ? 'dark' : 'light' )
+  }), [theme]);
+  // …
+};
+  </script>
+
+  <h3>Step 09 · useTransition 让打字不掉帧（最终版）</h3>
+  <script type="text/plain" data-code data-lang="jsx" data-cap="step-09-use-transition-final/app.js：输入拆成紧急 + 可等两份">
+const App = () => {
+  const [query, setQuery] = useState('');        // 输入框里的字：紧急
+  const [filterText, setFilterText] = useState('');  // 真正参与筛选的字：可以等
+  const [sortBy, setSortBy] = useState('title');
+  const [isPending, startTransition] = useTransition();
+  // …其它 state
+
+  const handleQueryChange = (text) => {
+    setQuery(text);                  // 紧急：字母立刻出现
+    startTransition(() => {
+      setFilterText(text);           // 不紧急：慢过滤在后台跑
+    });
+  };
+
+  const visibleMovies = useMemo(() => {
+    // 与 step 08 相同，只是用 filterText 过滤
+    const text = filterText.toLowerCase();
+    return movies
+      .filter( movie => movie.title.toLowerCase().includes(text) )
+      .sort( /* …同上… */ );
+  }, [movies, filterText, sortBy]);
+
+  return (
+    <ThemeContext.Provider value={themeValue}>
+      {/* … */}
+      <Toolbar
+        query={query}
+        onQueryChange={handleQueryChange}
+        sortBy={sortBy}
+        onSortChange={setSortBy}
+        isPending={isPending}         // 过渡中显示「Updating list…」
+      />
+      {/* … */}
+    </ThemeContext.Provider>
+  );
+};
+  </script>
+
+  <h3>这个项目用到的 Hook 一览</h3>
+  <div class="table-wrap">
+    <table>
+      <thead><tr><th>Step</th><th>Hook</th><th>解决的问题</th></tr></thead>
+      <tbody>
+        <tr><td>01</td><td><code>useState</code></td><td>受控表单，新增电影</td></tr>
+        <tr><td>02</td><td><code>useRef</code></td><td>操作 DOM：自动聚焦</td></tr>
+        <tr><td>03</td><td><code>useEffect</code></td><td>同步 document.title</td></tr>
+        <tr><td>04</td><td><code>useEffect</code></td><td>异步拉取 movies.json，处理 loading / error</td></tr>
+        <tr><td>05</td><td><code>useEffect</code> + 清理</td><td>倒计时，卸载时清定时器</td></tr>
+        <tr><td>06</td><td><code>useRef</code></td><td>统计渲染次数（不触发渲染）</td></tr>
+        <tr><td>07a</td><td>props</td><td>手传 theme：prop drilling 的代价</td></tr>
+        <tr><td>07b</td><td><code>useContext</code></td><td>全局主题共享</td></tr>
+        <tr><td>08</td><td><code>useMemo</code></td><td>缓存过滤排序 + 稳定 context value</td></tr>
+        <tr><td>09</td><td><code>useTransition</code></td><td>输入流畅、列表后台更新</td></tr>
+      </tbody>
+    </table>
+  </div>
+
+  <div class="done-row"><label class="done-label"><input type="checkbox" class="done-check" data-key="movienight"><span>标记「Movie Night 项目」已完成</span></label></div>
+</section>
+
 <section class="card" id="quiz">
   <h2><span class="sec-num">8</span>自测题</h2>
   <p class="lead">点了选项会立刻给出反馈与解析。全部做完，你就能判断自己是否真的掌握了这五个 Hook。</p>
@@ -2580,7 +4334,10 @@ const result = useMemo(() => heavyCompute(input), [input]);
   内容整理自本文件夹中的教材：<code>Create React Apps with Vite JS.pdf</code> · <code>useState-tutorial.pdf</code> ·
   <code>useEffect-tutorial.pdf</code> · <code>useContext.pdf</code> · <code>useContext-tutorial.pdf</code> ·
   <code>useMemo Tutorial.pdf</code> · <code>useRef-tutorial.pdf</code> · <code>useState-Lab.pdf</code> ·
-  <code>useEffect-dependencies/</code> · <code>usestate/</code>
+  <code>useTransition-Step-by-Step.pdf</code> · <code>Movie-Night-Part-3-Hooks-Tutorial.pdf</code> ·
+  <code>useEffect-dependencies/</code> · <code>usestate/</code> · <code>useContext-Step-by-Step-code/</code> ·
+  <code>useMemo-Step-by-Step/</code> · <code>useRef-Step-by-Step/</code> · <code>useTransition-Step-by-Step-code/</code> ·
+  <code>Movie-Night-Part-3-Hooks-Tutorial/</code> · <code>From-CDN-to-Vite-code/</code>
 </footer>
 
   </main>

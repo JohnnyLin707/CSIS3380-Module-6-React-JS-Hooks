@@ -1,0 +1,283 @@
+/* Shared styles for the Module 6 hook examples.
+   Plain and readable on purpose: the React code is the point, not the CSS.
+   You do not need to edit this file. */
+
+:root {
+  --bg: #f3f5f8;
+  --card: #ffffff;
+  --text: #1f2733;
+  --muted: #5f6b7a;
+  --line: #dde2ea;
+  --accent: #2f5fd0;
+  --accent-dark: #234aa6;
+  --good: #137a52;
+  --good-bg: #e3f4ec;
+  --bad: #b3261e;
+  --bad-bg: #fbe7e5;
+  --note-bg: #fff6dd;
+}
+
+* {
+  box-sizing: border-box;
+}
+
+body {
+  margin: 0;
+  padding: 24px 16px 48px;
+  background: var(--bg);
+  color: var(--text);
+  font-family: system-ui, -apple-system, "Segoe UI", Roboto, Arial, sans-serif;
+  line-height: 1.5;
+}
+
+/* Page frame: the HTML file writes the heading, React fills the card */
+.crumbs,
+.intro,
+#root,
+.examples {
+  max-width: 680px;
+  margin-left: auto;
+  margin-right: auto;
+}
+
+.crumbs {
+  margin-bottom: 12px;
+  font-size: 0.9rem;
+}
+
+.crumbs a {
+  color: var(--accent);
+  text-decoration: none;
+}
+
+.intro h1 {
+  margin: 0 0 6px;
+  font-size: 1.6rem;
+}
+
+.intro p {
+  margin: 0 0 18px;
+  color: var(--muted);
+}
+
+.eyebrow {
+  margin: 0 0 4px;
+  font-size: 0.78rem;
+  font-weight: 700;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--accent);
+}
+
+.card,
+.panel {
+  background: var(--card);
+  border: 1px solid var(--line);
+  border-radius: 10px;
+  padding: 20px;
+}
+
+#root.card {
+  box-shadow: 0 2px 8px rgba(31, 39, 51, 0.06);
+}
+
+.panel {
+  margin-top: 14px;
+  padding: 14px 16px;
+}
+
+.panel h2,
+.card h2 {
+  margin: 0 0 8px;
+  font-size: 1.05rem;
+}
+
+/* Layout helpers */
+.row {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  align-items: center;
+  margin: 10px 0;
+}
+
+.grid-2 {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 14px;
+}
+
+.big {
+  margin: 6px 0;
+  font-size: 2.2rem;
+  font-weight: 700;
+  font-variant-numeric: tabular-nums;
+}
+
+.muted {
+  color: var(--muted);
+  font-size: 0.9rem;
+}
+
+/* Controls */
+button {
+  padding: 8px 14px;
+  border: 1px solid var(--accent);
+  border-radius: 6px;
+  background: var(--accent);
+  color: #ffffff;
+  font: inherit;
+  font-size: 0.95rem;
+  font-weight: 600;
+  cursor: pointer;
+}
+
+button:hover {
+  background: var(--accent-dark);
+}
+
+button.secondary {
+  background: #ffffff;
+  color: var(--accent);
+}
+
+button.secondary:hover {
+  background: #eef2fc;
+}
+
+button:disabled {
+  opacity: 0.45;
+  cursor: not-allowed;
+}
+
+input[type=text],
+input[type=search],
+input[type=number],
+select {
+  padding: 8px 10px;
+  border: 1px solid #c5ccd8;
+  border-radius: 6px;
+  font: inherit;
+  background: #ffffff;
+  color: var(--text);
+}
+
+input:focus,
+select:focus {
+  outline: 2px solid var(--accent);
+  outline-offset: 1px;
+}
+
+label {
+  display: inline-flex;
+  gap: 6px;
+  align-items: center;
+}
+
+/* Lists */
+ul.list {
+  margin: 10px 0 0;
+  padding: 0;
+  list-style: none;
+}
+
+ul.list li {
+  padding: 8px 0;
+  border-bottom: 1px solid var(--line);
+}
+
+ul.list li:last-child {
+  border-bottom: none;
+}
+
+/* Status messages */
+.status {
+  padding: 10px 12px;
+  border-radius: 6px;
+  background: var(--bg);
+  color: var(--muted);
+}
+
+.status.error {
+  background: var(--bad-bg);
+  color: var(--bad);
+}
+
+.status.pending {
+  background: var(--note-bg);
+  color: #7a5a00;
+}
+
+.tag {
+  display: inline-block;
+  padding: 1px 8px;
+  border-radius: 10px;
+  background: var(--good-bg);
+  color: var(--good);
+  font-size: 0.8rem;
+  font-weight: 600;
+}
+
+code {
+  padding: 1px 5px;
+  border-radius: 4px;
+  background: #eef1f5;
+  font-family: "Courier New", monospace;
+  font-size: 0.92em;
+}
+
+/* The index page */
+.examples {
+  padding: 0;
+  list-style: none;
+}
+
+.examples li {
+  margin-bottom: 10px;
+}
+
+.examples a {
+  display: block;
+  padding: 14px 16px;
+  border: 1px solid var(--line);
+  border-radius: 10px;
+  background: var(--card);
+  color: var(--text);
+  text-decoration: none;
+}
+
+.examples a:hover {
+  border-color: var(--accent);
+}
+
+.examples strong {
+  color: var(--accent);
+}
+
+.examples span {
+  display: block;
+  color: var(--muted);
+  font-size: 0.9rem;
+}
+
+/* Dark theme, used by the useContext examples */
+.theme-dark {
+  background: #1b2230;
+  border-color: #313b4e;
+  color: #e6ebf3;
+}
+
+.theme-dark .panel {
+  background: #232c3d;
+  border-color: #313b4e;
+}
+
+.theme-dark .muted {
+  color: #a6b0c1;
+}
+
+@media (max-width: 560px) {
+  .grid-2 {
+    grid-template-columns: 1fr;
+  }
+}

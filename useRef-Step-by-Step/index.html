@@ -1,0 +1,26 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>useRef examples</title>
+    <link rel="stylesheet" href="./styles.css" />
+  </head>
+  <body>
+    <header class="intro">
+      <p class="eyebrow">CSIS 3380 · Module 6 · React Hooks</p>
+      <h1>useRef examples</h1>
+      <p>useRef keeps a value between renders without causing a re-render, or points at a DOM element. Open this page with Live Server, then work through the examples in order.</p>
+    </header>
+
+    <ul class="examples">
+      <li><a href="./01-focus-input.html"><strong>01 · Reaching a DOM element</strong><span>A ref points at an input, so a button can focus it or select its text.</span></a></li>
+      <li><a href="./02-ref-vs-state.html"><strong>02 · A ref remembers, but does not re-render</strong><span>Two counters side by side: one in state, one in a ref. Watch the Console.</span></a></li>
+      <li><a href="./03-stopwatch.html"><strong>03 · Keeping a timer id</strong><span>A stopwatch stores its interval id in a ref, so Stop and Reset can clear it.</span></a></li>
+      <li><a href="./04-previous-value.html"><strong>04 · Remembering the previous value</strong><span>An effect copies each render&#x27;s value into a ref, so the next render can show it.</span></a></li>
+      <li><a href="./05-forward-ref.html"><strong>05 · Passing a ref through your own component</strong><span>forwardRef lets a parent focus an input that lives inside a child component.</span></a></li>
+      <li><a href="./exercise/starter/index.html"><strong>Exercise · Colour strip</strong>
+        <span>Your turn. A worked solution is in exercise/solution/.</span></a></li>
+    </ul>
+  </body>
+</html>

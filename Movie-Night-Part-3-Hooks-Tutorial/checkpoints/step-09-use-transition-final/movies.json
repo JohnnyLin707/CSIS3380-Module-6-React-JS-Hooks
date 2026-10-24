@@ -1,0 +1,8 @@
+[
+  { "title": "Spirited Away", "year": 2001, "genre": "Animation", "rating": 5, "watched": true, "staffPick": true, "id": 1 },
+  { "title": "Inception", "year": 2010, "genre": "Sci-Fi", "rating": 4, "watched": true, "staffPick": false, "id": 2 },
+  { "title": "The Grand Budapest Hotel", "year": 2014, "genre": "Comedy", "rating": 4, "watched": false, "staffPick": true, "id": 3 },
+  { "title": "Coco", "year": 2017, "genre": "Animation", "rating": 5, "watched": false, "staffPick": false, "id": 4 },
+  { "title": "Arrival", "year": 2016, "genre": "Sci-Fi", "rating": 4, "watched": true, "staffPick": false, "id": 5 },
+  { "title": "Paddington 2", "year": 2017, "genre": "Comedy", "rating": 5, "watched": false, "staffPick": true, "id": 6 }
+]

@@ -1,0 +1,356 @@
+/* Movie Night — styles for the Basic React tutorial.
+   You do not need to edit this file. Every class name used in the
+   tutorial (watchlist, movie, rating, badge ...) is already styled here. */
+
+/* ELEMENT STYLES -------------------- */
+
+body {
+  margin: 0;
+  background: #eef1f6;
+  font-family: Arial, Helvetica, sans-serif;
+  color: #1d2433;
+}
+
+header {
+  display: flex;
+  align-items: center;
+  padding: 18px 24px;
+  background: #1f3a5f;
+  color: #ffffff;
+  border-bottom: 4px solid #f2b134;
+}
+
+header h1 {
+  flex-grow: 1;
+  margin: 0;
+  font-size: 1.6em;
+  letter-spacing: 1px;
+}
+
+header p {
+  margin: 6px 0 0;
+  color: #c9d6ea;
+}
+
+/* COMPONENT STYLES -------------------- */
+
+.watchlist {
+  width: 720px;
+  margin: 50px auto;
+  background: #ffffff;
+  border-radius: 8px;
+  overflow: hidden;
+  box-shadow: 0 4px 14px rgba(31, 58, 95, 0.18);
+}
+
+.stats {
+  padding: 6px 12px;
+  background: #f2b134;
+  color: #1f3a5f;
+  border-radius: 14px;
+  font-weight: bold;
+  font-size: 0.9em;
+}
+
+.movie {
+  display: flex;
+  align-items: center;
+  border-bottom: 1px solid #e3e7ee;
+}
+
+.movie:last-of-type {
+  border-bottom: none;
+}
+
+.movie-info {
+  flex-grow: 1;
+  padding: 14px 20px;
+}
+
+.movie-title {
+  display: block;
+  font-size: 1.15em;
+  font-weight: bold;
+  color: #1f3a5f;
+}
+
+.movie-meta {
+  display: block;
+  margin-top: 4px;
+  font-size: 0.85em;
+  color: #6b7486;
+}
+
+.badge {
+  display: inline-block;
+  margin-left: 8px;
+  padding: 2px 8px;
+  border-radius: 10px;
+  font-size: 0.7em;
+  font-weight: bold;
+  vertical-align: middle;
+  letter-spacing: 0.5px;
+}
+
+.badge-pick { background: #fff1d1; color: #8a5a00; }
+.badge-watched { background: #dcf0e7; color: #0d6a50; }
+.badge-unwatched { background: #eceff4; color: #6b7486; }
+
+.rating {
+  display: flex;
+  width: 170px;
+  align-self: stretch;
+}
+
+.rating-action {
+  border: none;
+  width: 50px;
+  font-size: 1.2em;
+  font-weight: bold;
+  color: #8b93a3;
+  background: #e8ebf1;
+  cursor: pointer;
+}
+
+.rating-action:hover { color: #ffffff; }
+.decrement:hover { background: #d9534f; }
+.increment:hover { background: #3c9d6b; }
+
+.rating-score {
+  flex-grow: 1;
+  align-self: center;
+  text-align: center;
+  font-family: "Courier New", monospace;
+  font-size: 1.8em;
+  color: #1f3a5f;
+}
+
+footer {
+  padding: 12px 20px;
+  background: #f6f8fb;
+  color: #6b7486;
+  font-size: 0.85em;
+  text-align: center;
+}
+
+/* Used in Steps 02-05, before there are components */
+#root > h1,
+#root > header {
+  max-width: 720px;
+  margin: 40px auto 0;
+}
+
+/* PART 2 ADDITIONS (state) -------------------- */
+
+header .stats + .stats {
+  margin-left: 8px;
+}
+
+.remove-movie {
+  border: none;
+  background: none;
+  margin: 0 -8px 0 14px;
+  padding: 4px;
+  font-size: 0.9em;
+  color: #c3c9d4;
+  cursor: pointer;
+}
+
+.remove-movie:hover {
+  color: #d9534f;
+}
+
+button.badge {
+  border: none;
+  font-family: inherit;
+  cursor: pointer;
+}
+
+button.badge:hover {
+  outline: 2px solid #1f3a5f;
+}
+
+.rating-action:disabled {
+  opacity: 0.35;
+  cursor: not-allowed;
+}
+
+.rating-action:disabled:hover {
+  background: #e8ebf1;
+  color: #8b93a3;
+}
+
+.empty {
+  margin: 0;
+  padding: 30px 20px;
+  text-align: center;
+  color: #6b7486;
+}
+
+/* PART 3 ADDITIONS (hooks) -------------------- */
+
+/* Add-movie form and toolbar */
+.add-movie,
+.toolbar {
+  display: flex;
+  gap: 8px;
+  align-items: center;
+  padding: 12px 20px;
+  background: #f6f8fb;
+  border-bottom: 1px solid #e3e7ee;
+}
+
+.add-movie input,
+.add-movie select,
+.toolbar input,
+.toolbar select {
+  padding: 7px 9px;
+  border: 1px solid #c9d0db;
+  border-radius: 5px;
+  font: inherit;
+  font-size: 0.9em;
+  background: #ffffff;
+  color: #1d2433;
+}
+
+.add-movie input[type=text],
+.toolbar input[type=search] {
+  flex-grow: 1;
+}
+
+.add-movie input[type=number] {
+  width: 80px;
+}
+
+.add-movie input:focus,
+.toolbar input:focus {
+  outline: 2px solid #f2b134;
+  border-color: #f2b134;
+}
+
+.add-movie button,
+.theme-toggle {
+  padding: 7px 12px;
+  border: none;
+  border-radius: 5px;
+  background: #1f3a5f;
+  color: #ffffff;
+  font: inherit;
+  font-size: 0.9em;
+  font-weight: bold;
+  cursor: pointer;
+}
+
+.toolbar label {
+  font-size: 0.85em;
+  color: #6b7486;
+}
+
+.toolbar label select {
+  margin-left: 6px;
+}
+
+.pending {
+  font-size: 0.8em;
+  color: #8a5a00;
+}
+
+/* Countdown banner and status messages */
+.countdown {
+  margin: 0;
+  padding: 8px 20px;
+  background: #fff1d1;
+  color: #8a5a00;
+  font-size: 0.9em;
+  text-align: center;
+}
+
+.countdown strong {
+  font-family: "Courier New", monospace;
+  font-size: 1.15em;
+}
+
+.status {
+  margin: 0;
+  padding: 24px 20px;
+  text-align: center;
+  color: #6b7486;
+}
+
+.status-error {
+  color: #a63428;
+  background: #fae2de;
+}
+
+.theme-toggle {
+  margin-left: 10px;
+  background: #f6f8fb;
+  color: #1f3a5f;
+}
+
+footer button {
+  margin-left: 10px;
+  padding: 3px 9px;
+  border: 1px solid #c9d0db;
+  border-radius: 4px;
+  background: #ffffff;
+  color: #1f3a5f;
+  font: inherit;
+  cursor: pointer;
+}
+
+/* Dark theme: App adds theme-dark to the card, Rating adds rating-dark */
+.watchlist.theme-dark {
+  background: #18202d;
+  box-shadow: 0 4px 14px rgba(0, 0, 0, 0.45);
+}
+
+.theme-dark header {
+  background: #0f1724;
+}
+
+.theme-dark .movie {
+  border-bottom-color: #2a3546;
+}
+
+.theme-dark .movie-title {
+  color: #e7ecf5;
+}
+
+.theme-dark .movie-meta,
+.theme-dark .status,
+.theme-dark .empty {
+  color: #9aa5b8;
+}
+
+.theme-dark .add-movie,
+.theme-dark .toolbar,
+.theme-dark footer {
+  background: #1e2838;
+  border-color: #2a3546;
+  color: #9aa5b8;
+}
+
+.theme-dark .add-movie input,
+.theme-dark .add-movie select,
+.theme-dark .toolbar input,
+.theme-dark .toolbar select,
+.theme-dark footer button {
+  background: #121a26;
+  border-color: #3a4659;
+  color: #e7ecf5;
+}
+
+.theme-dark .countdown {
+  background: #3a2f12;
+  color: #f2d48a;
+}
+
+.rating-dark .rating-action {
+  background: #243045;
+  color: #9aa5b8;
+}
+
+.rating-dark .rating-score {
+  color: #f2b134;
+}

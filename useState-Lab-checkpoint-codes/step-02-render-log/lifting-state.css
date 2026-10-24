@@ -1,0 +1,101 @@
+body {
+  padding: 24px 0;
+  align-items: flex-start;
+  justify-content: center;
+}
+
+.tree {
+  width: min(96vw, 500px);
+}
+
+/* Component blocks */
+.component {
+  border-radius: 12px;
+  padding: 16px;
+  position: relative;
+}
+
+.component-app {
+  background: #fef3c7;
+  border: 2px solid #f59e0b;
+}
+
+.component-counter {
+  background: #dbeafe;
+  border: 2px dashed #3b82f6;
+  margin-top: 12px;
+}
+
+.component-controls {
+  background: #dcfce7;
+  border: 2px dashed #22c55e;
+  margin-top: 12px;
+}
+
+/* Labels */
+.tag {
+  display: inline-block;
+  font-size: 0.7rem;
+  font-weight: 700;
+  letter-spacing: 0.05em;
+  text-transform: uppercase;
+  padding: 2px 8px;
+  border-radius: 6px;
+  margin-bottom: 8px;
+}
+
+.tag-app      { background: #f59e0b; color: #fff; }
+.tag-counter  { background: #3b82f6; color: #fff; }
+.tag-controls { background: #22c55e; color: #fff; }
+
+.component-title {
+  font-size: 1rem;
+  font-weight: 700;
+  margin: 0 0 4px;
+}
+
+.component-desc {
+  font-size: 0.78rem;
+  opacity: 0.7;
+  margin: 0 0 10px;
+}
+
+/* Prop badges */
+.props {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+  margin-bottom: 10px;
+}
+
+.prop {
+  font-size: 0.72rem;
+  font-family: monospace;
+  padding: 2px 8px;
+  border-radius: 6px;
+  background: rgba(0, 0, 0, 0.07);
+}
+
+.prop-down::before  { content: "⬇ "; }
+.prop-up::before    { content: "⬆ "; }
+.prop-state::before { content: "🗄 "; }
+
+/* Count display inside App */
+.state-display {
+  font-size: 2.2rem;
+  font-weight: 800;
+  margin: 4px 0 10px;
+  color: #92400e;
+}
+
+/* Arrow connector */
+.arrow {
+  text-align: center;
+  font-size: 0.7rem;
+  color: #6b7280;
+  margin: 2px 0;
+  line-height: 1.2;
+}
+
+/* Buttons reuse existing styles.css rules */
+.actions { flex-wrap: wrap; }

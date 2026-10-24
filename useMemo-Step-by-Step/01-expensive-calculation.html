@@ -1,0 +1,25 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Skip a slow calculation · useMemo</title>
+    <link rel="stylesheet" href="./styles.css" />
+  </head>
+  <body>
+    <nav class="crumbs"><a href="./index.html">← All useMemo examples</a></nav>
+    <header class="intro">
+      <p class="eyebrow">useMemo · Example 1</p>
+      <h1>Skip a slow calculation</h1>
+      <p>The same slow calculation twice: once on every render, once only when its input changes.</p>
+    </header>
+
+    <div id="root" class="card"></div>
+
+    <!-- React, ReactDOM and Babel from a CDN: no install, no build step -->
+    <script crossorigin src="https://unpkg.com/react@18.3.1/umd/react.development.js"></script>
+    <script crossorigin src="https://unpkg.com/react-dom@18.3.1/umd/react-dom.development.js"></script>
+    <script src="https://unpkg.com/@babel/standalone@7/babel.min.js"></script>
+    <script type="text/babel" src="./01-expensive-calculation.js"></script>
+  </body>
+</html>

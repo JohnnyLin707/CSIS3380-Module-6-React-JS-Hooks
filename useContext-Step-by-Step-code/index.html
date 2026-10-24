@@ -1,0 +1,25 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>useContext examples</title>
+    <link rel="stylesheet" href="./styles.css" />
+  </head>
+  <body>
+    <header class="intro">
+      <p class="eyebrow">CSIS 3380 · Module 6 · React Hooks</p>
+      <h1>useContext examples</h1>
+      <p>useContext lets a component read a value that a parent provides, without passing props through every level. Open this page with Live Server, then work through the examples in order.</p>
+    </header>
+
+    <ul class="examples">
+      <li><a href="./01-prop-drilling.html"><strong>01 · The problem: prop drilling</strong><span>A name typed at the top is passed through a component that does not need it.</span></a></li>
+      <li><a href="./02-create-and-use-context.html"><strong>02 · The fix: create, provide, consume</strong><span>The same app with a context. The middle component no longer passes anything on.</span></a></li>
+      <li><a href="./03-theme-toggle.html"><strong>03 · Sharing a value and a function</strong><span>A theme context holds the current theme and a toggle that any component can call.</span></a></li>
+      <li><a href="./04-provider-and-custom-hook.html"><strong>04 · A provider component and a custom hook</strong><span>AuthProvider wraps its children; useAuth() gives any component the user, login and logout.</span></a></li>
+      <li><a href="./exercise/starter/index.html"><strong>Exercise · English / Español</strong>
+        <span>Your turn. A worked solution is in exercise/solution/.</span></a></li>
+    </ul>
+  </body>
+</html>
