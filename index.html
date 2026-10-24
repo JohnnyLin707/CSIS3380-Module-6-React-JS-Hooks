@@ -200,7 +200,7 @@
   <div class="spacer"></div>
   <div class="progress-wrap">
     <div class="progress-track"><div class="progress-fill" id="pfill"></div></div>
-    <div class="progress-text" id="ptext">0 / 19</div>
+    <div class="progress-text" id="ptext">0 / 20</div>
   </div>
   <button class="icon-btn" id="themeBtn" title="切换深色/浅色">🌙</button>
 </header>
@@ -224,11 +224,12 @@
       <a href="#useref"><span class="n">7</span>useRef</a>
       <a href="#refsbs"><span class="n">7.1</span>useRef 分步</a>
       <a href="#transitionsbs"><span class="n">7.2</span>useTransition 分步</a>
-      <a href="#movienight"><span class="n">10</span>Movie Night 项目</a>
-      <a href="#crypto"><span class="n">11</span>Crypto Lab 教材</a>
-      <a href="#crypto-code"><span class="n">12</span>Crypto 成品代码</a>
-      <a href="#quiz"><span class="n">8</span>自测题</a>
-      <a href="#cheatsheet"><span class="n">9</span>速查表</a>
+      <a href="#movienight"><span class="n">8</span>Movie Night 项目</a>
+      <a href="#crypto-cn"><span class="n">9</span>Crypto 中文版教程</a>
+      <a href="#crypto"><span class="n">10</span>Crypto 中英对照</a>
+      <a href="#crypto-code"><span class="n">11</span>Crypto 成品代码</a>
+      <a href="#quiz"><span class="n">12</span>自测题</a>
+      <a href="#cheatsheet"><span class="n">13</span>速查表</a>
     </nav>
   </aside>
 
@@ -3722,7 +3723,7 @@ root.render(<App />);
 </section>
 
 <section class="card" id="movienight">
-  <h2><span class="sec-num">10</span>综合项目：Movie Night Part 3</h2>
+  <h2><span class="sec-num">8</span>综合项目：Movie Night Part 3</h2>
   <p class="lead"><code>Movie-Night-Part-3-Hooks-Tutorial/</code> 用同一个「观影清单」应用，从 Part 2 的成果出发，
   一步一步把本模块的 Hook 全部用上。每个 <code>checkpoints/step-XX/</code> 都是一个可直接运行的完整版本，下面按步骤给出<b>新增/改动的代码</b>（均已加中文注释）。</p>
 
@@ -4125,8 +4126,286 @@ const App = () => {
   <div class="done-row"><label class="done-label"><input type="checkbox" class="done-check" data-key="movienight"><span>标记「Movie Night 项目」已完成</span></label></div>
 </section>
 
+<section class="card" id="crypto-cn">
+  <h2><span class="sec-num">9</span>中文版教程：从零做一个加密市场追踪器</h2>
+  <p class="lead">这一节把 <code>SbS Exercise Lab - Cryptocurrency Market Tracker.pdf</code> 完整改写成<b>中文分步教程</b>。
+  跟着 Step 1–10 走完，你会得到一个纯 CDN（不用 npm、不用构建工具）的 React 应用：
+  从接口拉取加密货币列表 → 随机展示 12 个 → 算出它们的市值总和 → 点按钮移除卡片并实时重算。</p>
+
+  <h3>你要做什么 & 需要什么</h3>
+  <ul class="checks">
+    <li><b>目标</b>：<code>fetch</code> 一份加密货币列表，随机挑一部分展示，计算这些币的市值总和，并可以把某一项移除</li>
+    <li><b>前置</b>：一个编辑器（VS Code / Notepad++ / Sublime）、一个浏览器、懂基本 HTML 结构与 JS 变量/函数/数组</li>
+    <li><b>文件结构</b>：<code>index.html</code> + <code>js/app.js</code> + <code>css/style.css</code>（骨架已在 <code>Exercise Lab - Crypto/</code> 里）</li>
+    <li><b>接口</b>：<code>https://api.coingecko.com/api/v3/coins/markets?vs_currency=usd&amp;order=market_cap_desc&amp;per_page=100&amp;page=1&amp;sparkline=false</code></li>
+  </ul>
+
+  <div class="table-wrap">
+    <table>
+      <thead><tr><th>Step</th><th>这一步做什么</th><th>用到的知识点</th></tr></thead>
+      <tbody>
+        <tr><td>1</td><td>新建 <code>index.html</code>，写 HTML 骨架</td><td>HTML 结构、<code>#root</code> 挂载点</td></tr>
+        <tr><td>2</td><td>用 CDN 引入 React / ReactDOM / Babel</td><td>CDN、<code>type="text/babel"</code></td></tr>
+        <tr><td>3</td><td>写出第一个组件 App 并挂到页面上</td><td>组件、<code>createRoot().render()</code></td></tr>
+        <tr><td>4</td><td>写洗牌函数 <code>shuffleArray</code></td><td>数组浅拷贝、Fisher–Yates 洗牌</td></tr>
+        <tr><td>5</td><td>用 <code>useEffect</code> 拉取接口数据</td><td><code>useState</code>、<code>useEffect</code>、<code>fetch</code></td></tr>
+        <tr><td>6</td><td>整理字段并随机挑 12 个</td><td><code>map</code>、<code>slice</code></td></tr>
+        <tr><td>7</td><td>抽出 <code>CryptoCard</code> 卡片组件</td><td>props、组件拆分</td></tr>
+        <tr><td>8</td><td>渲染卡片列表并实现删除</td><td>列表渲染、<code>key</code>、<code>filter</code></td></tr>
+        <tr><td>9</td><td>计算并显示总市值</td><td><code>reduce</code>、删除后重算</td></tr>
+        <tr><td>10</td><td>加 CSS 让它好看</td><td>flex 布局、hover 动效</td></tr>
+      </tbody>
+    </table>
+  </div>
+
+  <div class="callout warn">
+    <div class="callout-h">⚠️ 开始之前：请用本地服务器打开</div>
+    <div class="callout-b">Babel 需要<b>用网络请求去取 <code>js/app.js</code></b>。直接双击打开（地址是 <code>file://…</code>）会被浏览器拦下，页面一片空白。
+    请在 VS Code 里右键 <code>index.html</code> → <b>Open with Live Server</b>。</div>
+  </div>
+
+  <h3>Step 1 · 建一个空文件</h3>
+  <p>在空文件夹里新建 <code>index.html</code>，先写上最基本的 HTML 结构。此时只有一个空的 <code>&lt;div id="root"&gt;</code> —— 它就是后面 React 要接管的地方。</p>
+
+  <h3>Step 2 · 用 CDN 引入三个库</h3>
+  <p>不用 npm、不用 Vite，直接在 <code>&lt;head&gt;</code> 里（<code>&lt;/head&gt;</code> 之前）放三个脚本，各司其职：</p>
+  <div class="table-wrap">
+    <table>
+      <thead><tr><th>脚本</th><th>作用</th></tr></thead>
+      <tbody>
+        <tr><td><code>react.development.js</code></td><td>React 库本体，提供全局变量 <code>React</code>（组件、Hooks 都在上面）</td></tr>
+        <tr><td><code>react-dom.development.js</code></td><td>ReactDOM，负责把 React 组件接到真实 DOM 上</td></tr>
+        <tr><td><code>babel.min.js</code></td><td>Babel，在浏览器里把 JSX / 新语法翻译成普通 JS</td></tr>
+        <tr><td><code>type="text/babel"</code></td><td>写在自己的脚本上，告诉浏览器「先别执行，交给 Babel」</td></tr>
+      </tbody>
+    </table>
+  </div>
+  <script type="text/plain" data-code data-lang="html" data-cap="index.html（骨架，与老师给的一致）">
+<!DOCTYPE html>
+<html>
+
+<head>
+    <meta charset="utf-8">
+    <title>Crypto Market Tracker</title>
+    <link rel="stylesheet" href="css/style.css" />
+</head>
+
+<body>
+    <div id="root"></div>
+
+    <script crossorigin src="https://unpkg.com/react@18/umd/react.development.js"></script>
+    <script crossorigin src="https://unpkg.com/react-dom@18/umd/react-dom.development.js"></script>
+    <script src="https://unpkg.com/babel-standalone@6/babel.min.js"></script>
+    <script type="text/babel" src="./js/app.js"></script>
+</body>
+
+</html>
+  </script>
+
+  <h3>Step 3 · 第一个组件 App</h3>
+  <p>在 <code>js/app.js</code> 里定义主组件 <code>App</code>（一个返回 JSX 的函数），再用 <code>ReactDOM.createRoot(...).render()</code>
+  把它渲染进 <code>#root</code>。保存刷新，页面应该出现 <b>Hello, Crypto Tracker!</b>。</p>
+  <script type="text/plain" data-code data-lang="jsx">
+// 从全局 React 对象里解构出要用到的 Hooks（CDN 写法，等价于 import）
+const { useState, useEffect } = React;
+
+// 主组件：目前只显示一句话
+const App = () => {
+    return (
+        <div>
+            <h1>Hello, Crypto Tracker!</h1>
+        </div>
+    );
+};
+
+// 把 App 挂到 id="root" 的节点上
+const root = ReactDOM.createRoot(document.getElementById('root'));
+root.render(<App />);
+  </script>
+
+  <h3>Step 4 · 洗牌函数 shuffleArray</h3>
+  <p>接口会返回 100 个币，我们要随机挑 12 个。写一个工具函数放在<b>脚本块里、App 之外</b>：
+  先浅拷贝数组（不动原数据），用 Fisher–Yates 算法打乱，再截取前 <code>n</code> 个。这一步界面没有变化。</p>
+  <script type="text/plain" data-code data-lang="jsx">
+function shuffleArray(array, n = 12) {
+    let newArray = [...array]; // 浅拷贝，避免改动原数组
+    let currentIndex = newArray.length;
+    let randomIndex;
+
+    while (currentIndex !== 0) {
+        randomIndex = Math.floor(Math.random() * currentIndex);
+        currentIndex--;
+        [newArray[currentIndex], newArray[randomIndex]] = [
+            newArray[randomIndex],
+            newArray[currentIndex],
+        ];
+    }
+    const numToSelect = Math.min(n, newArray.length); // 数据不够时最多取全部
+    return newArray.slice(0, numToSelect);
+}
+  </script>
+
+  <h3>Step 5 · 用 useEffect 拉数据</h3>
+  <p>在 <code>App</code> 里加一份 state 存列表，再写 <code>useEffect</code> 在组件挂载后 <code>fetch</code>：
+  检查 <code>res.ok</code>（失败就抛错）→ <code>res.json()</code> 解析 → 先打印原始数据确认能通 → <code>catch</code> 兜住错误。
+  依赖数组写 <code>[]</code>，表示「只在首次渲染后跑一次」。</p>
+  <script type="text/plain" data-code data-lang="jsx">
+const [cryptoList, setCryptoList] = useState([]);
+
+useEffect(() => {
+    console.log('Step 5: Fetching crypto data!');
+    fetch('https://api.coingecko.com/api/v3/coins/markets?vs_currency=usd&order=market_cap_desc&per_page=100&page=1&sparkline=false')
+        .then(res => {
+            if (!res.ok) { // 网络请求是否成功
+                throw new Error(`HTTP error! status: ${res.status}`);
+            }
+            return res.json(); // 解析 JSON
+        })
+        .then(data => {
+            console.log('Raw API data:', data); // 先在控制台看看数据结构
+        })
+        .catch(err => console.error('Error fetching crypto:', err));
+}, []); // 空依赖数组：只在初次渲染后执行一次
+  </script>
+  <p>按 F12 打开控制台，应该看到 <code>Step 5: Fetching crypto data!</code> 和一整串加密货币对象。</p>
+
+  <h3>Step 6 · 整理字段 + 随机挑 12 个</h3>
+  <p>接口字段很多，只保留要用的六个，并顺手改成更好读的驼峰命名；再调用 <code>shuffleArray</code> 随机挑 12 个写进 state。</p>
+  <script type="text/plain" data-code data-lang="jsx">
+.then(data => {
+    const mappedData = data.map(crypto => ({
+        id: crypto.id,                    // 唯一 id，用作 React 的 key
+        name: crypto.name,
+        symbol: crypto.symbol,
+        currentPrice: crypto.current_price,
+        marketCap: crypto.market_cap,
+        image: crypto.image               // 币种 logo 的 URL
+    }));
+
+    const selectedCryptos = shuffleArray(mappedData, 12); // 随机挑 12 个不重复的
+    setCryptoList(selectedCryptos);                       // 写进 state
+    console.log('Selected cryptos:', selectedCryptos);
+})
+  </script>
+
+  <h3>Step 7 · 抽出 CryptoCard 卡片组件</h3>
+  <p>一张卡片就是一个组件：只负责展示，自己不存 state，数据全靠 props 传入。
+  价格用 <code>toLocaleString()</code> 加千分位并保留 2–8 位小数；删除按钮调用父组件传下来的 <code>onRemove(id)</code>。</p>
+  <script type="text/plain" data-code data-lang="jsx">
+function CryptoCard({ id, name, symbol, price, marketCap, image, onRemove }) {
+    return (
+        <div className="crypto-card">
+            <img src={image} alt={`${name} logo`} className="crypto-card-img" />
+            <h3>{name} ({symbol.toUpperCase()})</h3>
+            <p>Price: ${price.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 8 })}</p>
+            <p>Market Cap: ${marketCap.toLocaleString()}</p>
+            <button className="remove-button" onClick={() => onRemove(id)}>Remove</button>
+        </div>
+    );
+}
+  </script>
+
+  <h3>Step 8 · 渲染列表 + 删除卡片</h3>
+  <p>把 <code>cryptoList</code> 映射成一组 <code>CryptoCard</code>；<code>removeCrypto</code> 用 <code>filter</code>
+  过滤掉被点掉的那一项（生成新数组，绝不改旧数组）。列表别忘了 <code>key={crypto.id}</code>。</p>
+  <script type="text/plain" data-code data-lang="jsx">
+const removeCrypto = (id) => {
+    const updatedList = cryptoList.filter(crypto => crypto.id !== id);
+    setCryptoList(updatedList);
+};
+
+<div className="crypto-list">
+    {cryptoList.length > 0 ? (
+        cryptoList.map(crypto => (
+            <CryptoCard
+                key={crypto.id} // 列表必须有稳定的 key
+                id={crypto.id}
+                name={crypto.name}
+                symbol={crypto.symbol}
+                price={crypto.currentPrice}
+                marketCap={crypto.marketCap}
+                image={crypto.image}
+                onRemove={removeCrypto} // 把删除函数传给子组件
+            />
+        ))
+    ) : (
+        <p className="no-data-message">Loading cryptocurrencies...</p>
+    )}
+</div>
+  </script>
+
+  <h3>Step 9 · 总市值</h3>
+  <p>再加一份 state 存总市值：数据到手时用 <code>reduce</code> 累加一次；删除卡片后按新列表再算一次；最后用 <code>&lt;h2&gt;</code> 显示。</p>
+  <script type="text/plain" data-code data-lang="jsx">
+const [totalMarketCap, setTotalMarketCap] = useState(0);
+
+// 初次加载后累加
+const sumMarketCap = selectedCryptos.reduce((acc, crypto) => {
+    return acc + crypto.marketCap;
+}, 0);
+setTotalMarketCap(sumMarketCap);
+
+// 删除后按新列表重算
+const removeCrypto = (id) => {
+    const updatedList = cryptoList.filter(crypto => crypto.id !== id);
+    setCryptoList(updatedList);
+
+    const newTotal = updatedList.reduce((acc, crypto) => acc + crypto.marketCap, 0);
+    setTotalMarketCap(newTotal);
+};
+
+// 展示
+<h2>Total Market Cap of Displayed Cryptos: ${totalMarketCap.toLocaleString()}</h2>
+  </script>
+
+  <h3>Step 10 · 加样式</h3>
+  <p>深色背景、红色主标题、绿色副标题；<code>.crypto-list</code> 用 flex 换行居中，每张卡片宽 200px，悬停时上浮 5px。
+  完整样式见成品代码一节。</p>
+  <script type="text/plain" data-code data-lang="css" data-cap="核心样式片段">
+.crypto-list {
+    display: flex;
+    flex-wrap: wrap;          /* 卡片自动换行 */
+    justify-content: center;
+    gap: 20px;                /* 卡片间距 */
+}
+.crypto-card {
+    background-color: #34495e;
+    border-radius: 10px;
+    padding: 15px;
+    width: 200px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+    transition: transform 0.2s ease-in-out;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+.crypto-card:hover { transform: translateY(-5px); }   /* 悬停上浮 */
+.crypto-card h3 { margin: 5px 0; color: #f1c40f; }    /* 黄色币种名 */
+  </script>
+
+  <h3>常见问题</h3>
+  <div class="qa">
+    <p><b>Q：页面一片空白？</b><br />A：多半是双击打开（<code>file://</code>）导致 Babel 取不到 <code>app.js</code>。用 Live Server 打开。</p>
+    <p><b>Q：显示 <code>HTTP error! status: 429</code>？</b><br />A：CoinGecko 免费接口按 IP 限流（约每分钟 10–30 次），刷新太频繁就会被拦。等 30 秒到 1 分钟再刷新即可。</p>
+    <p><b>Q：卡片点 Remove 没反应？</b><br />A：检查有没有把 <code>onRemove={removeCrypto}</code> 传下去，以及 <code>removeCrypto</code> 里是否用了 <code>setCryptoList</code> 更新 state（直接改数组不会触发渲染）。</p>
+    <p><b>Q：总市值一直显示 0？</b><br />A：确认 <code>setTotalMarketCap</code> 是在拿到 <code>selectedCryptos</code> 之后调用的，并且累加的是 <code>marketCap</code> 字段。</p>
+  </div>
+
+  <h4>自检清单</h4>
+  <ul class="selfcheck">
+    <li><label><input type="checkbox"> 我说得出三个 CDN 脚本各自的作用，以及 <code>type="text/babel"</code> 为什么必不可少。</label></li>
+    <li><label><input type="checkbox"> 我知道为什么依赖数组要写 <code>[]</code>，不写会怎样。</label></li>
+    <li><label><input type="checkbox"> 我会用 <code>map</code> 整理字段、用 <code>filter</code> 删除一项、用 <code>reduce</code> 求和。</label></li>
+    <li><label><input type="checkbox"> 我明白为什么删除时要生成新数组，而不是直接改旧数组。</label></li>
+    <li><label><input type="checkbox"> 我能解释 <code>onRemove</code> 这条「父传子回调」的数据流。</label></li>
+    <li><label><input type="checkbox"> 我知道列表渲染为什么必须写 <code>key</code>。</label></li>
+  </ul>
+
+  <div class="done-row"><label class="done-label"><input type="checkbox" class="done-check" data-key="crypto-cn"><span>标记「中文版教程」已阅读</span></label></div>
+</section>
+
 <section class="card" id="crypto">
-  <h2><span class="sec-num">11</span>分步实验：Cryptocurrency Market Tracker（教材）</h2>
+  <h2><span class="sec-num">10</span>中英对照：Cryptocurrency Market Tracker（教材原文）</h2>
   <p class="lead">这一节把 <code>SbS Exercise Lab - Cryptocurrency Market Tracker.pdf</code> 做成网页版教材：
   <b>保留英文原文</b>，并在下面给出中文翻译备注，方便对照阅读。配套的项目骨架在 <code>Exercise Lab - Crypto/</code> 文件夹里
   （<code>index.html</code> + <code>js/app.js</code> + <code>css/style.css</code>，全部走 CDN，不需要 npm）。</p>
@@ -4409,8 +4688,8 @@ const removeCrypto = (id) => {
 </section>
 
 <section class="card" id="crypto-code">
-  <h2><span class="sec-num">12</span>Crypto 项目成品代码</h2>
-  <p class="lead">按上一节 Step 1–10 的指引、沿用老师的代码格式（<code>index.html</code> + <code>js/app.js</code> + <code>css/style.css</code>）
+  <h2><span class="sec-num">11</span>Crypto 项目成品代码</h2>
+  <p class="lead">按前面 Step 1–10 的指引（中文版在<b>第 9 节</b>、英文原文在<b>第 10 节</b>），沿用老师的代码格式（<code>index.html</code> + <code>js/app.js</code> + <code>css/style.css</code>）
   完成的成品代码，补全的部分都加了中文注释。<b>原 <code>Exercise Lab - Crypto/</code> 文件夹未做任何修改</b>，
   成品另外提供了一份可以直接双击运行的单文件版本：<a href="./crypto-tracker.html" target="_blank" rel="noopener">crypto-tracker.html</a>
   （用浏览器打开即可，需联网加载 CDN 与 CoinGecko 接口）。</p>
@@ -4700,7 +4979,7 @@ h2 { color: #2ecc71; margin-top: 20px; margin-bottom: 30px; }  /* 绿色副标�
 
 
 <section class="card" id="quiz">
-  <h2><span class="sec-num">8</span>自测题</h2>
+  <h2><span class="sec-num">12</span>自测题</h2>
   <p class="lead">点了选项会立刻给出反馈与解析。全部做完，你就能判断自己是否真的掌握了这五个 Hook。</p>
 
   <div class="quiz" data-answer="1" data-fb="修改 ref.current 不会触发渲染，值被保留下来，直到某次由 state 引起的重渲染才会显示在界面上。">
@@ -4839,7 +5118,7 @@ h2 { color: #2ecc71; margin-top: 20px; margin-bottom: 30px; }  /* 绿色副标�
 </section>
 
 <section class="card" id="cheatsheet">
-  <h2><span class="sec-num">9</span>速查表</h2>
+  <h2><span class="sec-num">13</span>速查表</h2>
   <p class="lead">写代码时忘了用法，回来翻这一页就够了。</p>
 
   <h3>五个 Hook 的签名</h3>
