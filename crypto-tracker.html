@@ -1,0 +1,228 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <meta charset="utf-8">
+    <title>Crypto Market Tracker</title>
+    <style>
+        /* Step 10：页面整体样式（深色背景 + 浅色文字） */
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 20px;
+            background-color: #2c3e50;
+            color: #ecf0f1;
+            text-align: center;
+        }
+        h1 { color: #e74c3c; margin-bottom: 30px; }
+        h2 { color: #2ecc71; margin-top: 20px; margin-bottom: 30px; }
+        .crypto-list {
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: center;
+            gap: 20px;
+        }
+        .crypto-card {
+            background-color: #34495e;
+            border-radius: 10px;
+            padding: 15px;
+            width: 200px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+            transition: transform 0.2s ease-in-out;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            text-align: center;
+        }
+        .crypto-card:hover { transform: translateY(-5px); }
+        .crypto-card-img { width: 60px; height: 60px; margin-bottom: 10px; }
+        .crypto-card h3 { margin: 5px 0; color: #f1c40f; }
+        .crypto-card p { margin: 2px 0; font-size: 0.9em; }
+        .crypto-card .remove-button {
+            background-color: #c0392b;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            padding: 5px 10px;
+            margin-top: 10px;
+            cursor: pointer;
+            font-size: 0.8em;
+        }
+        .crypto-card .remove-button:hover { background-color: #e74c3c; }
+        .no-data-message { margin-top: 50px; font-style: italic; color: #bdc3c7; }
+        .error-message { margin-top: 30px; color: #ffb4ab; }
+        .reload-button {
+            background-color: #2ecc71;
+            color: #10321f;
+            border: none;
+            border-radius: 6px;
+            padding: 8px 14px;
+            margin-top: 12px;
+            cursor: pointer;
+            font-weight: 700;
+        }
+    </style>
+</head>
+
+<body>
+    <div id="root"></div>
+
+    <!-- Step 2：从 CDN 引入 React、ReactDOM 和 Babel（无需 npm / 构建工具） -->
+    <script crossorigin src="https://unpkg.com/react@18/umd/react.development.js"></script>
+    <script crossorigin src="https://unpkg.com/react-dom@18/umd/react-dom.development.js"></script>
+    <script src="https://unpkg.com/babel-standalone@6/babel.min.js"></script>
+
+    <!-- Step 3：我们自己的代码写在 type="text/babel" 里，Babel 会先把 JSX 翻译成普通 JS -->
+    <script type="text/babel">
+        // 从全局 React 对象里解构出 useState 和 useEffect（CDN 写法，等价于 import）
+        const { useState, useEffect } = React;
+
+        // 接口地址：按市值倒序取前 100 个币种
+        const API_URL =
+            'https://api.coingecko.com/api/v3/coins/markets?vs_currency=usd&order=market_cap_desc&per_page=100&page=1&sparkline=false';
+
+        // Step 4：洗牌工具函数 —— 随机挑 n 个不重复元素（Fisher–Yates 洗牌 + 切片）
+        function shuffleArray(array, n = 12) {
+            let newArray = [...array]; // 浅拷贝，避免改动原数组
+            let currentIndex = newArray.length;
+            let randomIndex;
+
+            while (currentIndex !== 0) {
+                randomIndex = Math.floor(Math.random() * currentIndex);
+                currentIndex--;
+                [newArray[currentIndex], newArray[randomIndex]] = [
+                    newArray[randomIndex],
+                    newArray[currentIndex],
+                ];
+            }
+            const numToSelect = Math.min(n, newArray.length); // 数据不足时最多取全部
+            return newArray.slice(0, numToSelect);
+        }
+
+        // Step 7：单张加密货币卡片组件（纯展示组件，自己不持有 state）
+        function CryptoCard({ id, name, symbol, price, marketCap, image, onRemove }) {
+            return (
+                <div className="crypto-card">
+                    <img src={image} alt={`${name} logo`} className="crypto-card-img" />
+                    <h3>{name} ({symbol.toUpperCase()})</h3>
+                    {/* toLocaleString 负责千分位；价格保留 2~8 位小数 */}
+                    <p>Price: ${price.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 8 })}</p>
+                    <p>Market Cap: ${marketCap.toLocaleString()}</p>
+                    {/* 点击时把 id 回传给父组件的删除函数 */}
+                    <button className="remove-button" onClick={() => onRemove(id)}>Remove</button>
+                </div>
+            );
+        }
+
+        // Step 3：主组件 App
+        const App = () => {
+            // Step 5：保存抓取到的加密货币列表
+            const [cryptoList, setCryptoList] = useState([]);
+            // Step 9：保存当前展示列表的市值总和
+            const [totalMarketCap, setTotalMarketCap] = useState(0);
+            // 补充：加载中与出错状态，让界面不要一直停在 “Loading…”
+            const [loading, setLoading] = useState(true);
+            const [error, setError] = useState(null);
+
+            // Step 5：挂载后拉取一次数据
+            useEffect(() => {
+                console.log('Step 6: Processing and selecting crypto data!');
+                setLoading(true);
+                setError(null);
+
+                fetch(API_URL)
+                    .then(res => {
+                        if (!res.ok) {
+                            // 请求本身失败（如 429 限流）时手动抛错，交给 catch 处理
+                            throw new Error(`HTTP error! status: ${res.status}`);
+                        }
+                        return res.json();
+                    })
+                    .then(data => {
+                        // Step 6：只保留页面需要的字段，字段命名改成更易读的驼峰
+                        const mappedData = data.map(crypto => ({
+                            id: crypto.id,                    // 作为 React 列表的 key
+                            name: crypto.name,
+                            symbol: crypto.symbol,
+                            currentPrice: crypto.current_price,
+                            marketCap: crypto.market_cap,
+                            image: crypto.image               // 币种 logo 的 URL
+                        }));
+
+                        const selectedCryptos = shuffleArray(mappedData, 12); // 随机挑 12 个
+                        setCryptoList(selectedCryptos);                       // 写入 state
+                        console.log('Selected cryptos:', selectedCryptos);
+
+                        // Step 9：用 reduce 累加市值总和
+                        const sumMarketCap = selectedCryptos.reduce((acc, crypto) => {
+                            return acc + crypto.marketCap;
+                        }, 0);
+                        setTotalMarketCap(sumMarketCap);
+                        setLoading(false);
+                    })
+                    .catch(err => {
+                        console.error('Error fetching crypto:', err);
+                        setError(err.message);
+                        setLoading(false);
+                    });
+            }, []); // 空依赖数组：只在首次渲染后执行一次
+
+            // Step 8：删除某个币种；Step 9：删除后重新计算总市值
+            const removeCrypto = (id) => {
+                // filter 返回新数组，不去修改原来的 cryptoList
+                const updatedList = cryptoList.filter(crypto => crypto.id !== id);
+                setCryptoList(updatedList);
+
+                const newTotal = updatedList.reduce((acc, crypto) => acc + crypto.marketCap, 0);
+                setTotalMarketCap(newTotal);
+            };
+
+            // 重新加载：再来一次随机 12 个（把拉取逻辑单独提出来更好，这里为可读性直接刷新页面）
+            const reload = () => window.location.reload();
+
+            return (
+                <div>
+                    <h1>Cryptocurrency Market Tracker</h1>
+
+                    {/* Step 9：显示当前展示列表的市值总和 */}
+                    <h2>Total Market Cap of Displayed Cryptos: ${totalMarketCap.toLocaleString()}</h2>
+
+                    {error && (
+                        <div>
+                            <p className="error-message">Error fetching crypto: {error}</p>
+                            <button className="reload-button" onClick={reload}>Retry</button>
+                        </div>
+                    )}
+
+                    {/* Step 8：把 cryptoList 映射成一张张 CryptoCard */}
+                    <div className="crypto-list">
+                        {loading ? (
+                            <p className="no-data-message">Loading cryptocurrencies...</p>
+                        ) : cryptoList.length > 0 ? (
+                            cryptoList.map(crypto => (
+                                <CryptoCard
+                                    key={crypto.id}                    // 列表必须有稳定的 key
+                                    id={crypto.id}
+                                    name={crypto.name}
+                                    symbol={crypto.symbol}
+                                    price={crypto.currentPrice}
+                                    marketCap={crypto.marketCap}
+                                    image={crypto.image}
+                                    onRemove={removeCrypto}            // 把删除函数传给子组件
+                                />
+                            ))
+                        ) : (
+                            <p className="no-data-message">All cryptos removed. <button className="reload-button" onClick={reload}>Load again</button></p>
+                        )}
+                    </div>
+                </div>
+            );
+        };
+
+        // Step 3：把 App 挂载到 id="root" 的节点上
+        const root = ReactDOM.createRoot(document.getElementById('root'));
+        root.render(<App />);
+    </script>
+</body>
+
+</html>

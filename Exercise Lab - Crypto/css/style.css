@@ -1,0 +1,70 @@
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 20px;
+            background-color: #2c3e50; /* Dark background */
+            color: #ecf0f1; /* Light text */
+            text-align: center;
+        }
+        h1 {
+            color: #e74c3c; /* Red accent */
+            margin-bottom: 30px;
+        }
+        h2 {
+            color: #2ecc71; /* Green accent */
+            margin-top: 20px;
+            margin-bottom: 30px;
+        }
+        .crypto-list {
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: center;
+            gap: 20px; /* Space between cards */
+        }
+        .crypto-card {
+            background-color: #34495e; /* Darker card background */
+            border-radius: 10px;
+            padding: 15px;
+            width: 200px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+            transition: transform 0.2s ease-in-out;
+            cursor: pointer; /* Indicate it's clickable */
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            text-align: center;
+        }
+        .crypto-card:hover {
+            transform: translateY(-5px);
+        }
+        .crypto-card-img {
+            width: 60px;
+            height: 60px;
+            margin-bottom: 10px;
+        }
+        .crypto-card h3 {
+            margin: 5px 0;
+            color: #f1c40f; /* Yellow accent for name */
+        }
+        .crypto-card p {
+            margin: 2px 0;
+            font-size: 0.9em;
+        }
+        .crypto-card .remove-button {
+            background-color: #c0392b; /* Dark red for remove button */
+            color: white;
+            border: none;
+            border-radius: 5px;
+            padding: 5px 10px;
+            margin-top: 10px;
+            cursor: pointer;
+            font-size: 0.8em;
+        }
+        .crypto-card .remove-button:hover {
+            background-color: #e74c3c;
+        }
+        .no-data-message {
+            margin-top: 50px;
+            font-style: italic;
+            color: #bdc3c7;
+        }

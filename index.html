@@ -115,6 +115,13 @@
   ul.selfcheck{list-style:none;padding-left:0;margin:10px 0}
   ul.selfcheck li{margin:9px 0;padding:10px 13px;background:var(--bg2);border:1px solid var(--line);border-radius:10px;font-size:14.6px}
   ul.selfcheck input{accent-color:var(--accent);margin-right:9px;width:16px;height:16px;vertical-align:-2px}
+  .bilingual{border-left:3px solid var(--accent);background:var(--bg2);border-radius:10px;padding:12px 15px;margin:12px 0}
+  .bilingual .en{margin:0 0 8px;font-size:14.8px;line-height:1.7}
+  .bilingual .zh{margin:0;font-size:14.2px;color:var(--ink-soft);line-height:1.75}
+  .bilingual .zh::before{content:"🇨🇳 中文：";font-weight:700;color:var(--accent)}
+  .step-head{display:flex;align-items:center;gap:10px;margin:22px 0 6px}
+  .step-badge{display:inline-block;background:var(--accent);color:#fff;font-size:12px;font-weight:800;letter-spacing:.04em;padding:3px 10px;border-radius:99px}
+  .step-head h4{margin:0;font-size:16.5px}
   .think{border-left:4px solid var(--amber);background:var(--amber-soft);border-radius:10px;padding:12px 15px;margin:14px 0;font-size:14.8px}
   .ex{border:1px dashed var(--accent);border-radius:12px;padding:16px;margin:18px 0;background:color-mix(in srgb,var(--accent-soft) 45%,transparent)}
 
@@ -193,7 +200,7 @@
   <div class="spacer"></div>
   <div class="progress-wrap">
     <div class="progress-track"><div class="progress-fill" id="pfill"></div></div>
-    <div class="progress-text" id="ptext">0 / 17</div>
+    <div class="progress-text" id="ptext">0 / 19</div>
   </div>
   <button class="icon-btn" id="themeBtn" title="切换深色/浅色">🌙</button>
 </header>
@@ -218,6 +225,8 @@
       <a href="#refsbs"><span class="n">7.1</span>useRef 分步</a>
       <a href="#transitionsbs"><span class="n">7.2</span>useTransition 分步</a>
       <a href="#movienight"><span class="n">10</span>Movie Night 项目</a>
+      <a href="#crypto"><span class="n">11</span>Crypto Lab 教材</a>
+      <a href="#crypto-code"><span class="n">12</span>Crypto 成品代码</a>
       <a href="#quiz"><span class="n">8</span>自测题</a>
       <a href="#cheatsheet"><span class="n">9</span>速查表</a>
     </nav>
@@ -241,6 +250,7 @@
     <div class="mini-card"><span class="mini-tag">LAB</span><b>useState 实验课</b><p>75 分钟动手实验：mini 计数器 → 写坏它 → 加步长 → 三层组件树的状态提升。</p></div>
     <div class="mini-card"><span class="mini-tag">代码</span><b>各 Hook 分步代码</b><p>useContext / useMemo / useRef / useTransition 的 Step-by-Step 文件夹，每步一个可运行文件。</p></div>
     <div class="mini-card"><span class="mini-tag">项目</span><b>Movie Night Part 3</b><p>一个观影清单应用，9 个检查点把本模块所有 Hook 串起来。</p></div>
+    <div class="mini-card"><span class="mini-tag">LAB</span><b>Crypto 市场追踪器</b><p>纯 CDN 的 React 应用：拉接口、随机展示、算总市值、删除卡片，附中英对照教材与成品代码。</p></div>
   </div>
 
   <h3>推荐学习路线</h3>
@@ -4115,6 +4125,580 @@ const App = () => {
   <div class="done-row"><label class="done-label"><input type="checkbox" class="done-check" data-key="movienight"><span>标记「Movie Night 项目」已完成</span></label></div>
 </section>
 
+<section class="card" id="crypto">
+  <h2><span class="sec-num">11</span>分步实验：Cryptocurrency Market Tracker（教材）</h2>
+  <p class="lead">这一节把 <code>SbS Exercise Lab - Cryptocurrency Market Tracker.pdf</code> 做成网页版教材：
+  <b>保留英文原文</b>，并在下面给出中文翻译备注，方便对照阅读。配套的项目骨架在 <code>Exercise Lab - Crypto/</code> 文件夹里
+  （<code>index.html</code> + <code>js/app.js</code> + <code>css/style.css</code>，全部走 CDN，不需要 npm）。</p>
+
+  <div class="bilingual">
+    <p class="en">Step-by-Step Exercise Lab — Build a Cryptocurrency Market Tracker (using CDNs).
+    This exercise will guide you through creating a React web application from scratch using Content Delivery Networks (CDNs).
+    You'll learn to fetch data from an API, display it, perform calculations, and add interactivity, all within one HTML file.
+    <b>Goal:</b> Create an app that fetches a list of cryptocurrencies, displays a random selection,
+    calculates their total market capitalization, and allows you to remove items from the list.
+    <b>Prerequisites:</b> a text editor, a web browser, basic HTML structure, basic JavaScript (variables, functions, arrays).</p>
+    <p class="zh">这是一份用 CDN（不用构建工具）从零搭建 React 应用的分步实验：从接口取数据 → 展示 → 做计算 → 加交互，全部写在一个 HTML 文件里。
+    最终目标：拉取加密货币列表、随机展示其中一部分、算出它们的市值总和，并可以把卡片移除。
+    前置要求：一个编辑器、一个浏览器，懂基本 HTML 结构和 JS 变量/函数/数组。</p>
+  </div>
+
+  <div class="callout key">
+    <div class="callout-h">🔑 用到的数据接口</div>
+    <div class="callout-b"><code>https://api.coingecko.com/api/v3/coins/markets?vs_currency=usd&amp;order=market_cap_desc&amp;per_page=100&amp;page=1&amp;sparkline=false</code><br />
+    按市值倒序返回 100 个币种；每条数据会用到 <code>id</code>、<code>name</code>、<code>symbol</code>、<code>current_price</code>、<code>market_cap</code>、<code>image</code> 这几个字段。
+    免费接口有限流，频繁刷新可能返回 <b>429</b>，属正常现象。</div>
+  </div>
+
+  <div class="table-wrap">
+    <table>
+      <thead><tr><th>Step</th><th>做什么</th><th>涉及知识点</th></tr></thead>
+      <tbody>
+        <tr><td>1</td><td>创建 index.html 基本结构</td><td>HTML 骨架</td></tr>
+        <tr><td>2</td><td>用 CDN 引入 React / ReactDOM / Babel</td><td>CDN、<code>type="text/babel"</code></td></tr>
+        <tr><td>3</td><td>写出第一个组件 App 并挂载</td><td><code>ReactDOM.createRoot</code></td></tr>
+        <tr><td>4</td><td>洗牌辅助函数 shuffleArray</td><td>数组拷贝、随机洗牌</td></tr>
+        <tr><td>5</td><td>useEffect 里 fetch 数据</td><td><code>useState</code>、<code>useEffect</code>、<code>fetch</code></td></tr>
+        <tr><td>6</td><td>整理字段并随机挑 12 个</td><td><code>map</code>、<code>slice</code></td></tr>
+        <tr><td>7</td><td>抽出 CryptoCard 子组件</td><td>props、组件拆分</td></tr>
+        <tr><td>8</td><td>渲染卡片列表并实现删除</td><td>props 回调、<code>filter</code></td></tr>
+        <tr><td>9</td><td>计算并展示总市值</td><td><code>reduce</code>、删除后重算</td></tr>
+        <tr><td>10</td><td>CSS 美化</td><td>flex 布局、hover 动效</td></tr>
+      </tbody>
+    </table>
+  </div>
+
+  <h3>Step 1–2 · HTML 骨架与 CDN 引入</h3>
+  <div class="bilingual">
+    <p class="en">Step 1: Create your basic HTML file. In an empty folder, create a new file and name it <code>index.html</code>,
+    then add the basic HTML boilerplate. Step 2: To use React directly in your HTML, you need to include React,
+    ReactDOM (which connects React to the DOM) and Babel (to translate modern JavaScript and JSX into browser-understandable code).
+    Place the <code>&lt;script&gt;</code> tags inside <code>&lt;head&gt;</code>, just before the closing <code>&lt;/head&gt;</code> tag.</p>
+    <p class="zh">第 1 步：新建空文件夹并创建 <code>index.html</code>，先写最基础的 HTML 结构。
+    第 2 步：把 React（库）、ReactDOM（把 React 接到真实 DOM 上）、Babel（把 JSX/新语法翻译成浏览器能懂的代码）
+    三个 CDN 脚本放进 <code>&lt;head&gt;</code> 里，结束标签之前。</p>
+  </div>
+  <script type="text/plain" data-code data-lang="html" data-cap="老师给的骨架：Exercise Lab - Crypto/index.html">
+<!DOCTYPE html>
+<html>
+
+<head>
+    <meta charset="utf-8">
+    <title>Scoreboard</title>
+    <link rel="stylesheet" href="css/style.css" />
+</head>
+
+<body>
+    <div id="root"></div>
+
+    <script crossorigin src="https://unpkg.com/react@18/umd/react.development.js"></script>
+    <script crossorigin src="https://unpkg.com/react-dom@18/umd/react-dom.development.js"></script>
+    <script src="https://unpkg.com/babel-standalone@6/babel.min.js"></script>
+    <script type="text/babel" src="./js/app.js"></script>
+</body>
+
+</html>
+  </script>
+
+  <h3>Step 3 · 第一个 React 组件</h3>
+  <div class="bilingual">
+    <p class="en">Step 3: Create your first React component (App). Define your main React component and tell ReactDOM to render it
+    into the #root div. Add a <code>&lt;script type="text/babel"&gt;</code> block just before the closing <code>&lt;/body&gt;</code> tag.
+    Test it: save and refresh, you should see “Hello, Crypto Tracker!”.</p>
+    <p class="zh">第 3 步：定义主组件 <code>App</code>，并让 ReactDOM 把它渲染进 <code>#root</code> 这个 div。
+    脚本块要写在 <code>&lt;/body&gt;</code> 之前，并且必须带 <code>type="text/babel"</code>，否则浏览器不认识 JSX。
+    保存刷新后应该看到 “Hello, Crypto Tracker!”。</p>
+  </div>
+  <script type="text/plain" data-code data-lang="jsx">
+// Destructure useState and useEffect from the global React object
+const { useState, useEffect } = React;
+
+// Define your main App component
+const App = () => {
+    // For now, let's just show a simple message
+    return (
+        <div>
+            <h1>Hello, Crypto Tracker!</h1>
+        </div>
+    );
+};
+
+// Tell ReactDOM to render your App component into the div with id="root"
+const root = ReactDOM.createRoot(document.getElementById('root'));
+root.render(<App />);
+  </script>
+
+  <h3>Step 4 · shuffleArray 洗牌函数</h3>
+  <div class="bilingual">
+    <p class="en">Step 4: You'll need a way to randomly select cryptocurrencies. Define <code>shuffleArray</code> inside the Babel block
+    but <b>outside</b> the App component. It makes a shallow copy, shuffles it with Fisher–Yates, then returns the first <code>n</code> items.
+    Test it: no visual change, but the helper is now available.</p>
+    <p class="zh">第 4 步：需要一个随机挑币种的辅助函数。<code>shuffleArray</code> 写在脚本块里、<b>App 组件之外</b>（和组件同级）：
+    先浅拷贝数组（不破坏原数据），用 Fisher–Yates 算法打乱，再取前 <code>n</code> 个。这一步界面没有变化，只是准备好工具函数。</p>
+  </div>
+  <script type="text/plain" data-code data-lang="jsx">
+function shuffleArray(array, n = 12) {
+    let newArray = [...array]; // Create a shallow copy to avoid mutating original
+    let currentIndex = newArray.length;
+    let randomIndex;
+
+    while (currentIndex !== 0) {
+        randomIndex = Math.floor(Math.random() * currentIndex);
+        currentIndex--;
+        [newArray[currentIndex], newArray[randomIndex]] = [
+            newArray[randomIndex],
+            newArray[currentIndex],
+        ];
+    }
+    const numToSelect = Math.min(n, newArray.length);
+    return newArray.slice(0, numToSelect);
+}
+  </script>
+
+  <h3>Step 5 · 用 useEffect 拉取数据</h3>
+  <div class="bilingual">
+    <p class="en">Step 5: Add state for the data (<code>const [cryptoList, setCryptoList] = useState([]);</code>),
+    then add a <code>useEffect</code> hook to fetch data when the component mounts. Check <code>res.ok</code>, throw on failure,
+    parse JSON with <code>res.json()</code>, log the raw data, and catch errors. The empty dependency array <code>[]</code> means
+    “run only once after the initial render”. Test it: open the console, you should see “Step 5: Fetching crypto data!” and a large array.</p>
+    <p class="zh">第 5 步：先用 <code>useState([])</code> 建一份空列表，再用 <code>useEffect</code> 在组件挂载后 <code>fetch</code> 数据：
+    检查 <code>res.ok</code>（失败就抛错）、<code>res.json()</code> 解析、先打印原始数据确认能通、用 <code>catch</code> 兜住错误。
+    依赖数组写成 <code>[]</code> 表示「只在首次渲染后跑一次」。打开控制台应看到 “Step 5: Fetching crypto data!” 和一整串数组。</p>
+  </div>
+  <script type="text/plain" data-code data-lang="jsx">
+const [cryptoList, setCryptoList] = useState([]);
+
+useEffect(() => {
+    console.log('Step 5: Fetching crypto data!');
+    fetch('https://api.coingecko.com/api/v3/coins/markets?vs_currency=usd&order=market_cap_desc&per_page=100&page=1&sparkline=false')
+        .then(res => {
+            if (!res.ok) { // Check if the network request was successful
+                throw new Error(`HTTP error! status: ${res.status}`);
+            }
+            return res.json(); // Parse the JSON response
+        })
+        .then(data => {
+            console.log('Raw API data:', data);
+            // We'll process and set cryptoList in the next step
+        })
+        .catch(err => console.error('Error fetching crypto:', err));
+}, []); // Empty dependency array: runs only once after initial render
+  </script>
+
+  <h3>Step 6 · 整理字段并随机选 12 个</h3>
+  <div class="bilingual">
+    <p class="en">Step 6: Modify the second <code>.then()</code> block to map the data and use <code>shuffleArray</code>.
+    Keep only the fields you need, then pick 12 random unique cryptos and store them in state with <code>setCryptoList</code>.</p>
+    <p class="zh">第 6 步：在第二个 <code>.then()</code> 里，先用 <code>map</code> 把接口字段整理成自己要用的结构（顺手把 <code>current_price</code>
+    改名为更好读的 <code>currentPrice</code>），再用 <code>shuffleArray(mappedData, 12)</code> 随机挑 12 个，最后 <code>setCryptoList</code> 写进 state。</p>
+  </div>
+  <script type="text/plain" data-code data-lang="jsx">
+.then(data => {
+    const mappedData = data.map(crypto => ({
+        id: crypto.id, // Unique ID for React key
+        name: crypto.name,
+        symbol: crypto.symbol,
+        currentPrice: crypto.current_price,
+        marketCap: crypto.market_cap,
+        image: crypto.image // URL to the crypto's logo
+    }));
+
+    const selectedCryptos = shuffleArray(mappedData, 12); // Select 12 random unique cryptos
+    setCryptoList(selectedCryptos); // Update state with the selected list
+    console.log('Selected cryptos:', selectedCryptos); // Log to confirm
+})
+  </script>
+
+  <h3>Step 7 · CryptoCard 子组件</h3>
+  <div class="bilingual">
+    <p class="en">Step 7: This component is responsible for displaying individual cryptocurrency details.
+    Define <code>CryptoCard</code> outside App. It receives props (<code>id, name, symbol, price, marketCap, image, onRemove</code>)
+    and renders the logo, name, price with <code>toLocaleString</code>, market cap, and a Remove button that calls <code>onRemove(id)</code>.</p>
+    <p class="zh">第 7 步：把「一张卡片」抽成独立组件 <code>CryptoCard</code>，同样写在 App 之外。它只负责展示，自己不存 state，
+    所有数据都通过 props 传入；价格用 <code>toLocaleString</code> 加千分位并保留 2–8 位小数，删除按钮调用父组件传下来的 <code>onRemove(id)</code>。</p>
+  </div>
+  <script type="text/plain" data-code data-lang="jsx">
+function CryptoCard({ id, name, symbol, price, marketCap, image, onRemove }) {
+    return (
+        <div className="crypto-card"> {/* We'll add CSS for this class later */}
+            <img src={image} alt={`${name} logo`} className="crypto-card-img" />
+            <h3>{name} ({symbol.toUpperCase()})</h3>
+            <p>Price: ${price.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 8 })}</p>
+            <p>Market Cap: ${marketCap.toLocaleString()}</p>
+            <button className="remove-button" onClick={() => onRemove(id)}>Remove</button>
+        </div>
+    );
+}
+  </script>
+
+  <h3>Step 8 · 渲染列表与删除</h3>
+  <div class="bilingual">
+    <p class="en">Step 8: Map <code>cryptoList</code> to <code>CryptoCard</code> components and define <code>removeCrypto</code>,
+    which filters out the removed crypto and updates state. Remember <code>key={crypto.id}</code> — essential for React lists.
+    Test it: click Remove and the card should disappear.</p>
+    <p class="zh">第 8 步：把 <code>cryptoList</code> 映射成一组 <code>CryptoCard</code>；<code>removeCrypto</code> 用 <code>filter</code>
+    过滤掉被点掉的那一项（生成新数组，不改旧数组）。列表务必写 <code>key={crypto.id}</code>，否则 React 无法高效地辨认每一项。
+    点 Remove 后对应卡片消失。</p>
+  </div>
+  <script type="text/plain" data-code data-lang="jsx">
+const removeCrypto = (id) => {
+    // Filter out the removed crypto
+    const updatedList = cryptoList.filter(crypto => crypto.id !== id);
+    setCryptoList(updatedList);
+};
+
+<div className="crypto-list">
+    {cryptoList.length > 0 ? (
+        cryptoList.map(crypto => (
+            <CryptoCard
+                key={crypto.id} // Essential for React lists
+                id={crypto.id}
+                name={crypto.name}
+                symbol={crypto.symbol}
+                price={crypto.currentPrice}
+                marketCap={crypto.marketCap}
+                image={crypto.image}
+                onRemove={removeCrypto} // Pass the removal function
+            />
+        ))
+    ) : (
+        <p className="no-data-message">Loading cryptocurrencies...</p>
+    )}
+</div>
+  </script>
+
+  <h3>Step 9 · 总市值</h3>
+  <div class="bilingual">
+    <p class="en">Step 9: Add <code>totalMarketCap</code> state, calculate it with <code>reduce</code> right after the list is set,
+    recalculate it inside <code>removeCrypto</code>, and display it with an <code>&lt;h2&gt;</code>.
+    Test it: remove a card and the total should update dynamically.</p>
+    <p class="zh">第 9 步：新增一份 <code>totalMarketCap</code> state；数据到手后用 <code>reduce</code> 累加市值；
+    在 <code>removeCrypto</code> 里按删除后的新列表再算一次；最后用 <code>&lt;h2&gt;</code> 显示。删卡片时总市值会实时变化。</p>
+  </div>
+  <script type="text/plain" data-code data-lang="jsx">
+const [totalMarketCap, setTotalMarketCap] = useState(0);
+
+// 初次加载后计算
+const sumMarketCap = selectedCryptos.reduce((acc, crypto) => {
+    return acc + crypto.marketCap;
+}, 0);
+setTotalMarketCap(sumMarketCap);
+
+// 删除后重新计算
+const removeCrypto = (id) => {
+    const updatedList = cryptoList.filter(crypto => crypto.id !== id);
+    setCryptoList(updatedList);
+
+    const newTotal = updatedList.reduce((acc, crypto) => acc + crypto.marketCap, 0);
+    setTotalMarketCap(newTotal);
+};
+
+<h2>Total Market Cap of Displayed Cryptos: ${totalMarketCap.toLocaleString()}</h2>
+  </script>
+
+  <h3>Step 10 · 样式</h3>
+  <div class="bilingual">
+    <p class="en">Step 10: Basic styling. Add the CSS rules inside <code>&lt;head&gt;</code> (or in <code>css/style.css</code>):
+    a dark background, a red <code>h1</code>, a green <code>h2</code>, and a <code>.crypto-list</code> flex container with wrapping
+    200px cards that lift on hover.</p>
+    <p class="zh">第 10 步：加样式。深色背景、红色主标题、绿色副标题；<code>.crypto-list</code> 用 flex 换行居中，
+    每张 <code>.crypto-card</code> 宽 200px，鼠标悬停时 <code>transform: translateY(-5px)</code> 轻微上浮。</p>
+  </div>
+
+  <div class="done-row"><label class="done-label"><input type="checkbox" class="done-check" data-key="crypto"><span>标记「Crypto Lab 教材」已阅读</span></label></div>
+</section>
+
+<section class="card" id="crypto-code">
+  <h2><span class="sec-num">12</span>Crypto 项目成品代码</h2>
+  <p class="lead">按上一节 Step 1–10 的指引、沿用老师的代码格式（<code>index.html</code> + <code>js/app.js</code> + <code>css/style.css</code>）
+  完成的成品代码，补全的部分都加了中文注释。<b>原 <code>Exercise Lab - Crypto/</code> 文件夹未做任何修改</b>，
+  成品另外提供了一份可以直接双击运行的单文件版本：<a href="./crypto-tracker.html" target="_blank" rel="noopener">crypto-tracker.html</a>
+  （用浏览器打开即可，需联网加载 CDN 与 CoinGecko 接口）。</p>
+
+  <h3>成品做了哪些补全</h3>
+  <ul class="checks">
+    <li><b>index.html</b>：把标题从占位的 <code>Scoreboard</code> 改成 <code>Crypto Market Tracker</code>，并补上 <code>viewport</code></li>
+    <li><b>js/app.js</b>：把接口地址抽成常量 <code>API_URL</code>，补全 <code>loading</code> / <code>error</code> 两态与重试按钮，
+    列表为空时给出「重新加载」入口（老师原版只有 Loading 一种状态）</li>
+    <li><b>css/style.css</b>：沿用老师的配色与卡片样式，额外补了 <code>.error-message</code> 与 <code>.reload-button</code></li>
+  </ul>
+
+  <h3>成品 · index.html</h3>
+  <script type="text/plain" data-code data-lang="html" data-cap="沿用老师的结构：head 里引样式，body 里四个 script（三个 CDN + 自己的 babel 脚本）">
+<!DOCTYPE html>
+<html>
+
+<head>
+    <meta charset="utf-8">
+    <!-- 补全：标题改成项目名，并补上移动端 viewport -->
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Crypto Market Tracker</title>
+    <link rel="stylesheet" href="css/style.css" />
+</head>
+
+<body>
+    <!-- React 会把整个应用渲染进这个节点 -->
+    <div id="root"></div>
+
+    <!-- 1) React 库本身 -->
+    <script crossorigin src="https://unpkg.com/react@18/umd/react.development.js"></script>
+    <!-- 2) ReactDOM：把 React 接到真实 DOM 上 -->
+    <script crossorigin src="https://unpkg.com/react-dom@18/umd/react-dom.development.js"></script>
+    <!-- 3) Babel：在浏览器里把 JSX 翻译成普通 JS -->
+    <script src="https://unpkg.com/babel-standalone@6/babel.min.js"></script>
+    <!-- 4) 我们自己的代码：type="text/babel" 让浏览器先别执行，等 Babel 处理 -->
+    <script type="text/babel" src="./js/app.js"></script>
+</body>
+
+</html>
+  </script>
+
+  <h3>成品 · js/app.js（完整）</h3>
+  <script type="text/plain" data-code data-lang="jsx">
+// 从全局 React 对象里解构出 useState 和 useEffect（CDN 写法，等价于 import { useState, useEffect } from 'react'）
+const { useState, useEffect } = React;
+
+// 接口地址：按市值倒序取前 100 个币种（补全：抽成常量，避免把这串长 URL 散落在代码里）
+const API_URL =
+    'https://api.coingecko.com/api/v3/coins/markets?vs_currency=usd&order=market_cap_desc&per_page=100&page=1&sparkline=false';
+
+// Step 4：洗牌工具函数 —— 随机挑 n 个不重复元素（Fisher–Yates 洗牌 + 切片）
+function shuffleArray(array, n = 12) {
+    let newArray = [...array]; // 浅拷贝，避免改动原数组
+    let currentIndex = newArray.length;
+    let randomIndex;
+
+    while (currentIndex !== 0) {
+        randomIndex = Math.floor(Math.random() * currentIndex);
+        currentIndex--;
+        // 交换：把当前位置和随机位置的元素互换
+        [newArray[currentIndex], newArray[randomIndex]] = [
+            newArray[randomIndex],
+            newArray[currentIndex],
+        ];
+    }
+    const numToSelect = Math.min(n, newArray.length); // 数据不足时最多取全部
+    return newArray.slice(0, numToSelect);
+}
+
+// Step 7：单张加密货币卡片组件（纯展示组件，自己不持有 state）
+function CryptoCard({ id, name, symbol, price, marketCap, image, onRemove }) {
+    return (
+        <div className="crypto-card">
+            <img src={image} alt={`${name} logo`} className="crypto-card-img" />
+            <h3>{name} ({symbol.toUpperCase()})</h3>
+            {/* toLocaleString 负责千分位；价格保留 2~8 位小数 */}
+            <p>Price: ${price.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 8 })}</p>
+            <p>Market Cap: ${marketCap.toLocaleString()}</p>
+            {/* 点击时把 id 回传给父组件的删除函数 */}
+            <button className="remove-button" onClick={() => onRemove(id)}>Remove</button>
+        </div>
+    );
+}
+
+// Step 3：主组件 App
+const App = () => {
+    // Step 5：保存抓取到的加密货币列表
+    const [cryptoList, setCryptoList] = useState([]);
+    // Step 9：保存当前展示列表的市值总和
+    const [totalMarketCap, setTotalMarketCap] = useState(0);
+    // 补全：加载中与出错状态，让界面不要一直停在 “Loading…”
+    const [loading, setLoading] = useState(true);
+    const [error, setError] = useState(null);
+
+    // Step 5：挂载后拉取一次数据
+    useEffect(() => {
+        console.log('Step 6: Processing and selecting crypto data!');
+        setLoading(true);
+        setError(null);
+
+        fetch(API_URL)
+            .then(res => {
+                if (!res.ok) {
+                    // 请求本身失败（如 429 限流）时手动抛错，交给下面的 catch 处理
+                    throw new Error(`HTTP error! status: ${res.status}`);
+                }
+                return res.json();
+            })
+            .then(data => {
+                // Step 6：只保留页面需要的字段，并把命名改成更易读的驼峰
+                const mappedData = data.map(crypto => ({
+                    id: crypto.id,                    // 作为 React 列表的 key
+                    name: crypto.name,
+                    symbol: crypto.symbol,
+                    currentPrice: crypto.current_price,
+                    marketCap: crypto.market_cap,
+                    image: crypto.image               // 币种 logo 的 URL
+                }));
+
+                const selectedCryptos = shuffleArray(mappedData, 12); // 随机挑 12 个
+                setCryptoList(selectedCryptos);                       // 写入 state
+                console.log('Selected cryptos:', selectedCryptos);
+
+                // Step 9：用 reduce 累加市值总和
+                const sumMarketCap = selectedCryptos.reduce((acc, crypto) => {
+                    return acc + crypto.marketCap;
+                }, 0);
+                setTotalMarketCap(sumMarketCap);
+                setLoading(false);
+            })
+            .catch(err => {
+                console.error('Error fetching crypto:', err);
+                setError(err.message);
+                setLoading(false);
+            });
+    }, []); // 空依赖数组：只在首次渲染后执行一次
+
+    // Step 8：删除某个币种；Step 9：删除后重新计算总市值
+    const removeCrypto = (id) => {
+        // filter 返回新数组，不去修改原来的 cryptoList
+        const updatedList = cryptoList.filter(crypto => crypto.id !== id);
+        setCryptoList(updatedList);
+
+        const newTotal = updatedList.reduce((acc, crypto) => acc + crypto.marketCap, 0);
+        setTotalMarketCap(newTotal);
+    };
+
+    // 补全：重新加载（这里的简单实现是刷新页面，重新随机 12 个）
+    const reload = () => window.location.reload();
+
+    return (
+        <div>
+            <h1>Cryptocurrency Market Tracker</h1>
+
+            {/* Step 9：显示当前展示列表的市值总和 */}
+            <h2>Total Market Cap of Displayed Cryptos: ${totalMarketCap.toLocaleString()}</h2>
+
+            {/* 补全：出错时给出提示和重试按钮 */}
+            {error && (
+                <div>
+                    <p className="error-message">Error fetching crypto: {error}</p>
+                    <button className="reload-button" onClick={reload}>Retry</button>
+                </div>
+            )}
+
+            {/* Step 8：把 cryptoList 映射成一张张 CryptoCard */}
+            <div className="crypto-list">
+                {loading ? (
+                    <p className="no-data-message">Loading cryptocurrencies...</p>
+                ) : cryptoList.length > 0 ? (
+                    cryptoList.map(crypto => (
+                        <CryptoCard
+                            key={crypto.id}                    // 列表必须有稳定的 key
+                            id={crypto.id}
+                            name={crypto.name}
+                            symbol={crypto.symbol}
+                            price={crypto.currentPrice}
+                            marketCap={crypto.marketCap}
+                            image={crypto.image}
+                            onRemove={removeCrypto}            // 把删除函数传给子组件
+                        />
+                    ))
+                ) : (
+                    <p className="no-data-message">All cryptos removed. <button className="reload-button" onClick={reload}>Load again</button></p>
+                )}
+            </div>
+        </div>
+    );
+};
+
+// Step 3：把 App 挂载到 id="root" 的节点上
+const root = ReactDOM.createRoot(document.getElementById('root'));
+root.render(<App />);
+  </script>
+
+  <h3>成品 · css/style.css</h3>
+  <details class="sol">
+    <summary>📘 展开完整样式（沿用老师配色，补全 error / reload 两个类）</summary>
+    <script type="text/plain" data-code data-lang="css">
+body {
+    font-family: Arial, sans-serif;
+    margin: 0;
+    padding: 20px;
+    background-color: #2c3e50; /* 深色背景 */
+    color: #ecf0f1;            /* 浅色文字 */
+    text-align: center;
+}
+h1 { color: #e74c3c; margin-bottom: 30px; }      /* 红色主标题 */
+h2 { color: #2ecc71; margin-top: 20px; margin-bottom: 30px; }  /* 绿色副标题：总市值 */
+.crypto-list {
+    display: flex;
+    flex-wrap: wrap;           /* 卡片自动换行 */
+    justify-content: center;
+    gap: 20px;                 /* 卡片间距 */
+}
+.crypto-card {
+    background-color: #34495e;
+    border-radius: 10px;
+    padding: 15px;
+    width: 200px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+    transition: transform 0.2s ease-in-out;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    text-align: center;
+}
+.crypto-card:hover { transform: translateY(-5px); }  /* 悬停时轻微上浮 */
+.crypto-card-img { width: 60px; height: 60px; margin-bottom: 10px; }
+.crypto-card h3 { margin: 5px 0; color: #f1c40f; }   /* 黄色币种名 */
+.crypto-card p { margin: 2px 0; font-size: 0.9em; }
+.crypto-card .remove-button {
+    background-color: #c0392b;
+    color: white;
+    border: none;
+    border-radius: 5px;
+    padding: 5px 10px;
+    margin-top: 10px;
+    cursor: pointer;
+    font-size: 0.8em;
+}
+.crypto-card .remove-button:hover { background-color: #e74c3c; }
+.no-data-message { margin-top: 50px; font-style: italic; color: #bdc3c7; }
+
+/* ↓↓↓ 补全：出错提示与重试按钮 ↓↓↓ */
+.error-message { margin-top: 30px; color: #ffb4ab; }
+.reload-button {
+    background-color: #2ecc71;
+    color: #10321f;
+    border: none;
+    border-radius: 6px;
+    padding: 8px 14px;
+    margin-top: 12px;
+    cursor: pointer;
+    font-weight: 700;
+}
+    </script>
+  </details>
+
+  <h3>这个项目练到的知识点</h3>
+  <div class="table-wrap">
+    <table>
+      <thead><tr><th>代码</th><th>知识点</th></tr></thead>
+      <tbody>
+        <tr><td><code>useState([])</code> / <code>useState(0)</code></td><td>列表与数值两份 state，各自独立</td></tr>
+        <tr><td><code>useEffect(..., [])</code></td><td>挂载后只请求一次；空依赖数组的含义</td></tr>
+        <tr><td><code>fetch().then().then().catch()</code></td><td>链式处理：状态码检查 → 解析 → 写 state → 兜错</td></tr>
+        <tr><td><code>map</code> / <code>filter</code> / <code>reduce</code></td><td>整理字段、删除一项、累加市值</td></tr>
+        <tr><td><code>[...array]</code></td><td>浅拷贝，避免改动原数组（React 里非常重要）</td></tr>
+        <tr><td>父传子 props + 回调</td><td><code>onRemove</code> 由 App 定义、CryptoCard 调用（数据向下、事件向上）</td></tr>
+        <tr><td><code>key={crypto.id}</code></td><td>列表渲染的稳定标识</td></tr>
+        <tr><td><code>toLocaleString()</code></td><td>数字千分位与小数位格式化</td></tr>
+      </tbody>
+    </table>
+  </div>
+
+  <div class="callout tip">
+    <div class="callout-h">💡 想继续练手</div>
+    <div class="callout-b">① 加一个搜索框，用 <code>useMemo</code> 缓存过滤结果；② 加「按价格 / 市值排序」的下拉框；
+    ③ 把 <code>totalMarketCap</code> 改成 <code>useMemo</code> 派生值，而不是单独一份 state（避免两处状态不同步）；
+    ④ 加一个「换一批」按钮，重新洗牌而不重新请求接口。</div>
+  </div>
+
+  <div class="done-row"><label class="done-label"><input type="checkbox" class="done-check" data-key="crypto-code"><span>标记「Crypto 成品代码」已完成</span></label></div>
+</section>
+
+
 <section class="card" id="quiz">
   <h2><span class="sec-num">8</span>自测题</h2>
   <p class="lead">点了选项会立刻给出反馈与解析。全部做完，你就能判断自己是否真的掌握了这五个 Hook。</p>
@@ -4337,7 +4921,8 @@ const result = useMemo(() => heavyCompute(input), [input]);
   <code>useTransition-Step-by-Step.pdf</code> · <code>Movie-Night-Part-3-Hooks-Tutorial.pdf</code> ·
   <code>useEffect-dependencies/</code> · <code>usestate/</code> · <code>useContext-Step-by-Step-code/</code> ·
   <code>useMemo-Step-by-Step/</code> · <code>useRef-Step-by-Step/</code> · <code>useTransition-Step-by-Step-code/</code> ·
-  <code>Movie-Night-Part-3-Hooks-Tutorial/</code> · <code>From-CDN-to-Vite-code/</code>
+  <code>Movie-Night-Part-3-Hooks-Tutorial/</code> · <code>From-CDN-to-Vite-code/</code> ·
+  <code>Exercise Lab - Crypto/</code> · <code>SbS Exercise Lab - Cryptocurrency Market Tracker.pdf</code>
 </footer>
 
   </main>
